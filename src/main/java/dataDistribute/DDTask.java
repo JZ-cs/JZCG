@@ -40,6 +40,8 @@ public class DDTask implements Runnable{
         int batches = this.trainingInfo.batches;
         int epoches = this.trainingInfo.epoches;
         double lr = this.trainingInfo.lr;
+        CG.gatherInfo();
+        System.out.println("Now run DDTask-" + this.me);
         for(int ep = 0; ep < epoches; ep++){
             for(int b = 0; b < batches; b++){
                 /*1.local transforward and transback, calculate the grads for current server*/
@@ -48,19 +50,19 @@ public class DDTask implements Runnable{
                 CG.DAG.transForward();
                 CG.DAG._grad.set_ones();
                 CG.DAG.transBack();
-
+                System.out.printf("DDTask-%d epoch:%d, batch:%d local calculate finish! %n", this.me, ep, b);
                 /*2.grad exchange, fill with other servers' grads*/
                 int parts = this.numServers;
                 int[][] pinfos = this.PartitionInfos;
                 //(1).prepare for grad exchange
                 double[] gbuff = new double[(int)CG.totalGradNums];
-
                 //(2).copy grads to gbuff
+                System.out.println(CG.gradName2posInfo.size());
                 for(Map.Entry<String, int[]> entry : CG.gradName2posInfo.entrySet()){
                     int p = entry.getValue()[0];
                     int len = entry.getValue()[1];
                     String gname = entry.getKey();
-                    System.arraycopy(CG.gradNameMap.get(gname)._data, p, gbuff, p, len);
+                    System.arraycopy(CG.gradNameMap.get(gname)._data, 0, gbuff, p, len);
                 }
                 //(3).setup gPartitions for server grads exchange
                 GradPartitionMatrix gpm = new GradPartitionMatrix(parts, pinfos, gbuff, this.me);
@@ -91,10 +93,11 @@ public class DDTask implements Runnable{
                     int p = entry.getValue()[0];
                     int len = entry.getValue()[1];
                     String gname = entry.getKey();
-                    System.arraycopy(gbuff, p, CG.gradNameMap.get(gname)._data, p, len);
+                    System.arraycopy(gbuff, p, CG.gradNameMap.get(gname)._data, 0, len);
                 }
                 /*6.update weights with their grads*/
                 CG.DAG._updateWith_Grad(lr * (1.0 / batchSize));
+                System.out.printf("DDTask-%d epoch:%d, batch:%d Done! %n", this.me, ep, b);
             }
         }
         log.info("Trainning over!");

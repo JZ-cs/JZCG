@@ -94,5 +94,6 @@ public class TaskManager {
         }
         System.out.println("TaskManager-" + this.me + " Initialized!");
         new DDTask(this.trainingInfo, serverInfoList, me).run();
+        System.out.println("TaskManager-" + this.me + " finished training!");
     }
 }

@@ -19,6 +19,7 @@ public class Calculation {
     public static final int MUL = 2;
     public static final int DIV = 3;
     public static final int MATMUL = 4;
+    public static String[] BiOpSign2String = new String[]{"add", "sub", "mul", "div", "matmul"};
     public static final int SUM = 5;
     public static final int MAX = 6;
     public static final int MIN = 7;

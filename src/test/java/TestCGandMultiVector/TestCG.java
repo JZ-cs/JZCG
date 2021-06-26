@@ -3,6 +3,8 @@ package TestCGandMultiVector;
 import CG.ComputationalGraph;
 import Foundation.*;
 import Foundation.lossFunctions.MSELoss;
+import dataDistribute.utils.GenCG;
+import utils.DataGenerator;
 
 import java.util.Map;
 
@@ -12,27 +14,29 @@ public class TestCG {
     }
     public static void test1(){
         /*
-        * z2 = sum(Sigmoid(xw1 + b1) * w2)*/
-        ComputationalGraph cg = new ComputationalGraph();
-        int[] dimx = {36, 32};
-        Node x = cg.CGnode(new MultiVector(dimx), false);
-        int[] dimw1 = {32, 16};
-        Node w1 = cg.CGnode(new MultiVector(dimw1, Calculation.SET_ALL_ONES), true);
-        Node h1 = cg.matmul(x, w1);
+        * h1 = xw1,   z1 = h1 + b1,   l1 = sigmoid(z1),   h2 = l1w2
+        * z = sum(h2)
+        * z = sum(Sigmoid(xw1 + b1) * w2)
+        */
+        int batches = 10;
+        int batchSize = 12;
+        int[] xShape = {32};
+        ComputationalGraph cg = GenCG.genSmallCG(12);
+        DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
+        Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(true);
+        MultiVector[] X = data.first;
+        MultiVector[] Y = data.second;
+        for(int ep = 0; ep < 10; ep++){
+            for(int i = 0; i < X.length; i++){
+                cg.input._tensor.set_with(X[i]);
+                cg.label._tensor.set_with(Y[i]);
+                cg.DAG.transForward();
+                cg.DAG._grad.set_ones();
+                cg.DAG.transBack();
+                cg.DAG._updateWith_Grad(0.05);
+            }
+        }
+        cg.nodeNameMap.get("w1")._tensor.print();
 
-        int[] dimb1 = {16};
-        Node b1 = cg.CGnode(new MultiVector(dimb1, Calculation.SET_ALL_ZEROS), true);
-        Node z1 = cg.add(h1, b1);
-        Node l1 = cg.sigmoid(z1);
-
-        int[] dimw2 = {16, 8};
-        Node w2 = cg.CGnode(new MultiVector(dimw2, Calculation.SET_INCREASE), true);
-        Node h2 = cg.matmul(l1, w2);
-        Node z = cg.sum(h2, true, 1);
-        int[] dimy = {12, 1};
-        Node y = cg.CGnode(new MultiVector(dimy), false);
-
-        Node mseLoss = cg.MSELoss(z, y);
-//        w1._grad.print();
     }
 }

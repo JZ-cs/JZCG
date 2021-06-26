@@ -503,7 +503,7 @@ public class MultiVector implements Serializable{
         Boolean needBoradcast = false;
         while(sp1 >= 0)
         {
-            if(this._shape.get(sp_self) != mv1._shape.get(sp1))
+            if(!this._shape.get(sp_self).equals(mv1._shape.get(sp1)))
             {
                 needBoradcast = true;
                 if(mv1._shape.get(sp1) != 1) throw new Exception(String.format("Dimension NOT match and can NOT broadcast(inplace)! Only the second can broadcast, however at dimension %s and dimension %s, got dimension size %s -- %s!", sp_self, sp1, this._shape.get(sp_self), mv1._shape.get(sp1)));
@@ -829,10 +829,12 @@ public class MultiVector implements Serializable{
         Boolean needBoradcast = false;
         while(sp1 >= 0 && sp2 >= 0)
         {
-            if(mv1._shape.get(sp1) != mv2._shape.get(sp2))
+            if(!mv1._shape.get(sp1).equals(mv2._shape.get(sp2)))
             {
                 needBoradcast = true;
-                if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1) throw new Exception(String.format("Dimension NOT match and can NOT broadcast! at dimension %s and dimension %s, got dimension size %s -- %s!", sp1, sp2, mv1._shape.get(sp1), mv2._shape.get(sp2)));
+                if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1){
+                    throw new Exception(String.format("op=(%s), Dimension NOT match and can NOT broadcast! at dimension %d of operand-1 and dimension %d of operand-2, got dimension size %d -- %d!", Calculation.BiOpSign2String[op], sp1, sp2, mv1._shape.get(sp1), mv2._shape.get(sp2)));
+                }
             }
             mv1.temp_shape.add(mv1._shape.get(sp1));
             mv2.temp_shape.add(mv2._shape.get(sp2));
@@ -1028,7 +1030,7 @@ public class MultiVector implements Serializable{
 
         if(mv1._dims < 2 || mv2._dims < 2) throw new Exception(String.format("When performing matrix multiplication, two MultiVectors should have at least 2 dimensions, while got %d and %d !", mv1._dims, mv2._dims));
 
-        if(mv1._shape.get(mv1._dims - 1) != mv2._shape.get(mv2._dims - 2))
+        if(!mv1._shape.get(mv1._dims - 1).equals(mv2._shape.get(mv2._dims - 2)))
         {
             throw new Exception(String.format("When performing matrix multiplication, the last dimension size of the first MultiVector shuld match the second last dimension size of the second MultiVector, while got %d and %d !", mv1._shape.get(mv1._dims - 1), mv2._shape.get(mv2._dims - 2)));
         }
@@ -1047,7 +1049,7 @@ public class MultiVector implements Serializable{
         Boolean needBoradcast = false;
         while(sp1 >= 0 && sp2 >= 0)
         {
-            if(mv1._shape.get(sp1) != mv2._shape.get(sp2))
+            if(!mv1._shape.get(sp1).equals(mv2._shape.get(sp2)))
             {
                 needBoradcast = true;
                 if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1)
@@ -1758,7 +1760,7 @@ public class MultiVector implements Serializable{
         {
             throw new Exception(String.format("When getting Matmul Broadcast info, the first should have at least 2 dimensions, and second(result) should have more or equal dimensions, while got %d dimensions and %d dimensions!", mv1._shape.size(), res._shape.size()));
         }
-        if(mv1._shape.get(mv1._dims - 1) != res._shape.get(res._dims - 1) && mv1._shape.get(mv1._dims - 2) != res._shape.get(res._dims - 2))
+        if(!mv1._shape.get(mv1._dims - 1).equals(res._shape.get(res._dims - 1)) && !mv1._shape.get(mv1._dims - 2).equals(res._shape.get(res._dims - 2)))
         {
             String dims_str1 = "(";
             String dims_strres = "(";

@@ -11,6 +11,7 @@ public class Moudle extends Node{
     public int _edgesNum = 0;
     public int _totalweights = 0;
     public boolean insideConnected = false;
+    private boolean initialized = false;
     /*output is the gate connecting this DAG to others and its inside parts,
     * typically, output is one of the Node in DAG, when adding a node into
     * DAG, the output is always updated by that node, to keep tracking of the
@@ -29,8 +30,8 @@ public class Moudle extends Node{
         this.Preds = new HashSet<>();
         this.isLeaf = false;
         this.Trainable = true;
-        this._tensor = new MultiVector(0);
-        this._grad = new MultiVector(0);
+        this._tensor = null;
+        this._grad = null;
     }
     public Moudle(Node... _inputs)
     {
@@ -290,6 +291,12 @@ public class Moudle extends Node{
 
     @Override
     public void transForward() {
+        if(!this.initialized){
+            /*meaning the tensor and grad of the moudle itself is null*/
+            this._tensor = MultiVector.MultiVector_like(this._output._tensor);
+            this._grad = MultiVector.MultiVector_like(this._output._grad);
+            this.initialized = true;
+        }
         if(!this.insideConnected)
         {
             //inside parts are not Connected!!!

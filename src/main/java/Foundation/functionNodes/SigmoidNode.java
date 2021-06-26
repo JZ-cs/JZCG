@@ -25,10 +25,11 @@ public class SigmoidNode extends Node {
 
         //use f'(x) = f(x) * (1 - f(x))
         MultiVector grad_Equal2selfTensor = MultiVector.MultiVector_like(this._tensor);
-        grad_Equal2selfTensor.set_with(this._tensor);
+        grad_Equal2selfTensor.set_with(this._grad);
 
-        MultiVector allones = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ONES);
-        MultiVector tgrad0 = MultiVector.mul(grad_Equal2selfTensor, MultiVector.sub(allones, grad_Equal2selfTensor));
+        MultiVector secondPart = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ONES);
+        secondPart.sub(grad_Equal2selfTensor);
+        MultiVector tgrad0 = MultiVector.mul(grad_Equal2selfTensor, secondPart);
 
         this.pred[0]._grad.add(tgrad0);
         this.pred[0].outd--;

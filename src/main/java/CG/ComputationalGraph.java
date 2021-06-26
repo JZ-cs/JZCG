@@ -15,8 +15,9 @@ public class ComputationalGraph implements Serializable {
     public Node input;
     public Node label;
     public HashMap<String, MultiVector> gradNameMap;
+    public HashMap<String, Node> nodeNameMap;
+    public HashMap<String, Node> leafNameMap;
     public HashMap<String, int[]> gradName2posInfo;
-    public HashMap<String, Integer> gradPartitionMap;
     public ComputationalGraph(){
         this.DAG = new Moudle();
     }
@@ -137,7 +138,31 @@ public class ComputationalGraph implements Serializable {
         return DAG.addFrom(_p, _y, Calculation.MSE_LOSS);
     }
 
-    public void gatherGradsInfo(){
+    public void gatherInfo(){
+        gatherNodeInfo();
+        gatherGradsInfo();
+    }
+
+    private void gatherNodeInfo(){
+        if(this.nodeNameMap == null){
+            this.nodeNameMap = new HashMap<>();
+        }
+        if(this.leafNameMap == null){
+            this.leafNameMap = new HashMap<>();
+        }
+        for(Node nd : this.DAG.nList){
+            if(nd.isLeaf){
+                if(!this.leafNameMap.containsKey(nd.Name)){
+                    this.leafNameMap.put(nd.Name, nd);
+                }
+            }
+            if(!this.nodeNameMap.containsKey(nd.Name)){
+                this.nodeNameMap.put(nd.Name, nd);
+            }
+        }
+    }
+
+    private void gatherGradsInfo(){
         if(this.gradNameMap == null){
             this.gradNameMap = new HashMap<>();
         }
