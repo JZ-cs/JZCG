@@ -1,6 +1,5 @@
 package network.netty.initializer.iserver;
 
-import dataDistribute.utils.GradPartitionMatrix;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -11,7 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import network.netty.server.GradTransferServerHandler;
+import io.netty.util.concurrent.Future;
 import utils.TrainingInfo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,12 +55,12 @@ public class InitializerServer {
 
             // Bind and start to accept incoming connections.
             serverChannel = b.bind(port).channel();
-            System.out.printf("%s -- Initializer server Listen at %d Run!%n", this.selfIp, this.port);
+            System.out.printf("Initializer server-%s Listen at %d Run!%n", this.selfIp, this.port);
             serverChannel.closeFuture();
             for(;;){
                 Thread.sleep(100);
                 if(Closed.get()){
-                    System.out.println("req Initializer server closed!");
+                    System.out.printf("Initializer server-%s Listen at %d start Closing! %n", this.selfIp, this.port);
                     closeServer();
                     break;
                 }
@@ -69,7 +68,11 @@ public class InitializerServer {
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
-            System.out.println(this.selfIp + " -- " + "Initializer server done!");
+//            Future<?> bs = bossGroup.shutdownGracefully();
+//            Future<?> ws = workerGroup.shutdownGracefully();
+//            bs.get();
+//            ws.get();
+            System.out.printf("Initializer server-%s Listen at %d now Closed! %n", this.selfIp, this.port);
         }
     }
 }

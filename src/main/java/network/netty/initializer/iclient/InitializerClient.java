@@ -1,5 +1,4 @@
 package network.netty.initializer.iclient;
-import dataDistribute.utils.ServerInfo;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -11,13 +10,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import network.netty.GradPackage;
-import network.netty.client.GradTransferClientHandler;
 import utils.TrainingInfo;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InitializerClient {
     private final String host;
@@ -65,7 +61,7 @@ public class InitializerClient {
                 f = bootstrap.connect().addListener((ChannelFuture futureListener)->{
                     final EventLoop eventLoop = futureListener.channel().eventLoop();
                     if (!futureListener.isSuccess()) {
-                        System.out.printf("Initializer Client FAILED to connected to Initializer Server! will retry in %d ms! %n", serverNonReadyRetryIntervalMs);
+                        System.out.printf("Initializer Client-%s FAILED to connected to Initializer Server-%s:%d! will retry in %d ms! %n", this.selfIp, this.host, this.port, serverNonReadyRetryIntervalMs);
                         eventLoop.schedule(() -> doConnect(new Bootstrap(), eventLoop), serverNonReadyRetryIntervalMs, TimeUnit.MILLISECONDS);
                     }else {
                         System.out.printf("Initializer Client successfully connected to Initializer Server-%s:%d! %n", this.host, this.port);
@@ -89,6 +85,6 @@ public class InitializerClient {
                 break;
             }
         }
-        System.out.println(selfIp + " -- " + "Initializer client shutdown!");
+        System.out.printf(selfIp + " -- " + "Initializer client-%s shutdown! %n", this.selfIp);
     }
 }

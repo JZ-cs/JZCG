@@ -1,10 +1,8 @@
 package network.netty.initializer.iserver;
 
-import dataDistribute.utils.GradPartitionMatrix;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import network.netty.GradPackage;
-import network.netty.server.GradTransferServerHandler;
+import network.netty.gradTransfer.server.GradTransferServerHandler;
 import utils.TrainingInfo;
 
 import java.util.Date;
@@ -29,7 +27,7 @@ public class InitializerServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        System.out.println(new Date() + " -- " + this.selfIp + " read as Initializer Server from Channel");
+        System.out.println(new Date() + " -- " + String.format("Initializer Server-%s read info from channel.", this.selfIp));
 //        GradPackage gradPackage = (GradPackage)msg;
 //        this.gpm.setPartitions(gradPackage.partitionId, gradPackage.gradSeqs);
         if(msg instanceof TrainingInfo){

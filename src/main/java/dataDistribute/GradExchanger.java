@@ -1,17 +1,12 @@
 package dataDistribute;
 
-import CG.ComputationalGraph;
-import com.sun.source.tree.UsesTree;
 import dataDistribute.utils.GradPartitionMatrix;
 import dataDistribute.utils.ServerInfo;
 import network.netty.GradPackage;
-import network.netty.client.GradTransferClient;
-import network.netty.server.GradTransferServer;
+import network.netty.gradTransfer.client.GradTransferClient;
+import network.netty.gradTransfer.server.GradTransferServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.GradSeq;
-
-import java.util.ArrayList;
 
 public class GradExchanger implements Runnable{
     public static final Logger log = LoggerFactory.getLogger(GradExchanger.class);
@@ -50,12 +45,12 @@ public class GradExchanger implements Runnable{
             int nextServerId = (this.me + 1) % n;
             GradPackage gradPackage = new GradPackage(this.gpm.gPartitions[pid], pid);
             String myIp = serverList[this.me].ip;
-            int listenPort = serverList[this.me].gradListenPort;
+            int myListenPort = serverList[this.me].gradListenPort;
             Thread listenThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        new GradTransferServer(myIp, listenPort, gpm).run();
+                        new GradTransferServer(myIp, myListenPort, gpm).run();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -63,11 +58,12 @@ public class GradExchanger implements Runnable{
             });
 
             String nextServerIp = this.serverList[nextServerId].ip;
+            int nextServerListenPort = this.serverList[nextServerId].gradListenPort;
             Thread sendThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        new GradTransferClient(myIp, nextServerIp, listenPort, gradPackage).run();
+                        new GradTransferClient(myIp, nextServerIp, nextServerListenPort, gradPackage).run();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -83,7 +79,7 @@ public class GradExchanger implements Runnable{
                 e.printStackTrace();
                 log.error(String.format("Err in waiting the grad exchange finish in turn: %d", t));
             }
-            System.out.printf("grad exchange completed: %.2f%%%n", 100.0 * (t + 1) / (2 * (n - 1)));
+            System.out.printf("%d-grad exchange completed: %.2f%%%n", this.me, 100.0 * (t + 1) / (2 * (n - 1)));
             x--;
             if(x == -1) x = n - 1;
         }
