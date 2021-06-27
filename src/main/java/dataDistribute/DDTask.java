@@ -45,11 +45,18 @@ public class DDTask implements Runnable{
         for(int ep = 0; ep < epoches; ep++){
             for(int b = 0; b < batches; b++){
                 /*1.local transforward and transback, calculate the grads for current server*/
-                CG.input._tensor.set_with(trainingInfo.X[b]);
-                CG.label._tensor.set_with(trainingInfo.Y[b]);
-                CG.DAG.transForward();
-                CG.DAG._grad.set_ones();
-                CG.DAG.transBack();
+//                CG.input._tensor.set_with(trainingInfo.X[b]);
+//                CG.label._tensor.set_with(trainingInfo.Y[b]);
+//                CG.DAG.transForward();
+//                CG.DAG._grad.set_ones();
+//                CG.DAG.transBack();
+                try {
+                    CG.setData(trainingInfo.X[b], trainingInfo.Y[b]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                CG.transForward();
+                CG.transBack();
                 System.out.printf("DDTask-%d epoch:%d, batch:%d local calculate finish! %n", this.me, ep, b);
                 /*2.grad exchange, fill with other servers' grads*/
                 int parts = this.numServers;
@@ -57,7 +64,6 @@ public class DDTask implements Runnable{
                 //(1).prepare for grad exchange
                 double[] gbuff = new double[(int)CG.totalGradNums];
                 //(2).copy grads to gbuff
-                System.out.println(CG.gradName2posInfo.size());
                 for(Map.Entry<String, int[]> entry : CG.gradName2posInfo.entrySet()){
                     int p = entry.getValue()[0];
                     int len = entry.getValue()[1];
@@ -96,7 +102,8 @@ public class DDTask implements Runnable{
                     System.arraycopy(gbuff, p, CG.gradNameMap.get(gname)._data, 0, len);
                 }
                 /*6.update weights with their grads*/
-                CG.DAG._updateWith_Grad(lr * (1.0 / batchSize));
+//                CG.DAG._updateWith_Grad(lr * (1.0 / batchSize));
+                CG.updateParameters(lr);
                 System.out.printf("DDTask-%d epoch:%d, batch:%d Done! %n", this.me, ep, b);
             }
         }

@@ -1,13 +1,10 @@
 package network.netty.initializer.iclient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import network.netty.GradPackage;
-import network.netty.client.GradTransferClientHandler;
+import network.netty.gradTransfer.client.GradTransferClientHandler;
 import utils.TrainingInfo;
 
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +26,7 @@ public class InitializerClientHandler extends ChannelInboundHandlerAdapter{
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         // Send the message to Server
         super.channelActive(ctx);
-        System.out.println("Initializer channel built, starting to send training info!");
+        System.out.printf("Initializer client-%s channel built, starting to send training info! %n", this.selfIp);
         ctx.writeAndFlush(this.trainingInfo);
     }
 
@@ -37,7 +34,7 @@ public class InitializerClientHandler extends ChannelInboundHandlerAdapter{
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         // you can use the Object from Server here
-        System.out.println("Receive close msg");
+        System.out.printf("Initializer client-%s receive close message. %n", this.selfIp);
         this.Closed.set(true);
         ctx.close();
     }

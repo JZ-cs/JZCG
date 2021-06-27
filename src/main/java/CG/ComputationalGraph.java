@@ -182,55 +182,25 @@ public class ComputationalGraph implements Serializable {
             }
         }
     }
-
-//    public void partitionGrads(int pNum){
-//        if(gradPartitionMap == null){
-//            this.gradPartitionMap = new HashMap<>();
-//        }
-//        if(pNum <= 1){
-//            for(String gName : this.gradNameMap.keySet()){
-//                gradPartitionMap.put(gName, 0);
-//            }
-//            return;
-//        }
-//        else if(pNum >= gradNameMap.size()){
-//            int count = 0;
-//            for(String gName : this.gradNameMap.keySet()){
-//                gradPartitionMap.put(gName, count++);
-//            }
-//            return;
-//        }
-//        int gradSize = this.gradNameMap.size();
-//        HashMap<String, Integer> gradName2Id = new HashMap<>();
-//        HashMap<Integer, String> gradId2Name = new HashMap<>();
-//        int count = 0;
-//        for(String gname : this.gradNameMap.keySet()){
-//            gradName2Id.put(gname, count);
-//            gradId2Name.put(count, gname);
-//            count++;
-//        }
-//        long[] gradEleNums = new long[gradSize];
-//        long totalGrads = 0;
-//        for(int i = 0; i < gradSize; i++){
-//            String gname = gradId2Name.get(i);
-//            gradEleNums[i] = this.gradNameMap.get(gname).total_eNum;
-//            totalGrads += gradEleNums[i];
-//        }
-//
-//        long partSize = totalGrads % pNum == 0 ? totalGrads / pNum : totalGrads / pNum + 1;
-//        int lPos = 0;
-//        for(int p = 0; p < pNum; p++){
-//            int rPos = lPos;
-//            long curEleNum = 0;
-//            while(rPos < gradSize && curEleNum < partSize){
-//                curEleNum += gradEleNums[rPos];
-//                rPos++;
-//            }
-//            for(int id = lPos; id < rPos; id++){
-//                String gname = gradId2Name.get(id);
-//                gradPartitionMap.put(gname, p);
-//            }
-//            lPos = rPos;
-//        }
-//    }
+    public void setData(MultiVector X, MultiVector Y) throws Exception{
+        if(this.input == null){
+            throw new Exception("Must designate the input of the model!");
+        }
+        if(this.label == null){
+            throw new Exception("Must designate the label of the model!");
+        }
+        this.input._tensor.set_with(X);
+        this.label._tensor.set_with(Y);
+    }
+    public void transForward(){
+        this.DAG.transForward();
+    }
+    public void transBack(){
+        this.DAG._grad.set_ones();
+        this.DAG.transBack();
+    }
+    public void updateParameters(double lr){
+        int batchSize = this.input._tensor._shape.get(0);
+        this.DAG._updateWith_Grad(lr / batchSize);
+    }
 }

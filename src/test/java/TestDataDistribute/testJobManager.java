@@ -9,21 +9,28 @@ import dataDistribute.utils.ServerInfo;
 import utils.DataGenerator;
 import utils.TrainingInfo;
 
+import java.net.InetAddress;
+
 public class testJobManager {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         int batches = 10;
         int batchSize = 36;
-        int numServers = 2;
         int epoches = 1;
         double lr = 0.05;
         int[] xShape = {32};
+        InetAddress addr = InetAddress.getLocalHost();
+        String ip = addr.getHostAddress();//localhost
+        ServerInfo[] serverInfos = new ServerInfo[]{
+                new ServerInfo(ip, 19997, 20997, 21997),
+                new ServerInfo(ip, 22997, 23997, 24997),
+                new ServerInfo(ip, 25997, 26997, 27997)
+        };
+        int numServers = serverInfos.length;
         ComputationalGraph CG = GenCG.genSmallCG(batchSize / numServers);
         DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
         Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(false);
         MultiVector[] X = data.first;
         MultiVector[] Y = data.second;
-        ServerInfo[] serverInfos = new ServerInfo[]{new ServerInfo("localhost", 19997, 20997, 21997),
-        new ServerInfo("localhost", 22997, 23997, 24997)};
 
         TrainingInfo trainingInfo = new TrainingInfo(serverInfos, CG, X, Y, batches, batchSize, epoches, lr);
         JobManager jobManager = new JobManager(trainingInfo);

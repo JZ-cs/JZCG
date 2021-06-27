@@ -1,7 +1,7 @@
 import dataDistribute.utils.GenPartitionInfo;
 import dataDistribute.utils.GradPartitionMatrix;
-import network.netty.client.GradTransferClient;
-import network.netty.server.GradTransferServer;
+import network.netty.gradTransfer.client.GradTransferClient;
+import network.netty.gradTransfer.server.GradTransferServer;
 import network.netty.GradPackage;
 
 public class TestNetty {
