@@ -59,7 +59,7 @@ public class GradTransferServer {
             System.out.printf("GradTransfer Server-%s listen at %d start!%n", this.selfIp, port);
             serverChannel.closeFuture();
             for(;;){
-                Thread.sleep(50);
+                Thread.sleep(100);
                 if(Closed.get()){
                     System.out.println("req GradTransfer server closed!");
                     closeServer();
