@@ -1,5 +1,6 @@
 package network.netty.gradTransfer.server;
 
+import dataDistribute.utils.GradPartition;
 import dataDistribute.utils.GradPartitionMatrix;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -12,14 +13,14 @@ import java.util.logging.Logger;
 
 public class GradTransferServerHandler extends ChannelInboundHandlerAdapter {
     private final String selfIp;
-    public GradPartitionMatrix gpm;
+    public GradPartition gp;
     public AtomicBoolean Closed;
     private static final Logger logger = Logger
             .getLogger(GradTransferServerHandler.class.getName());
 
-    public GradTransferServerHandler(String selfIp, GradPartitionMatrix gpm, AtomicBoolean Closed) {
+    public GradTransferServerHandler(String selfIp, GradPartition gp, AtomicBoolean Closed) {
         this.selfIp = selfIp;
-        this.gpm = gpm;
+        this.gp = gp;
         this.Closed = Closed;
     }
 
@@ -32,7 +33,12 @@ public class GradTransferServerHandler extends ChannelInboundHandlerAdapter {
         if(msg instanceof GradPackage){
             GradPackage gradPackage = (GradPackage)msg;
             System.out.printf("GradTransfer Server-%s msg got! %n", this.selfIp);
-            this.gpm.setPartitions(gradPackage.partitionId, gradPackage.gradSeqs);
+            if(gradPackage.op == GradPackage.ADD){
+                this.gp.addWith(gradPackage.partitionId, gradPackage.gradSeq);
+            }
+            else if(gradPackage.op == GradPackage.SET){
+                this.gp.replaceWith(gradPackage.partitionId, gradPackage.gradSeq);
+            }
             String serverMsg = "Accepted!";
             ctx.writeAndFlush(serverMsg);
         }

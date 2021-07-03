@@ -35,9 +35,9 @@ public class MainEntrance {
         }
         TaskManager taskManager;
         ServerInfo[] serverInfos = new ServerInfo[]{
-                new ServerInfo("129.211.184.219", 17107, 17307, 17507),
                 new ServerInfo("1.117.99.222", 28107, 28307, 18507),
-                new ServerInfo("118.31.46.60", 39107, 39307, 39507)
+                new ServerInfo("118.31.46.60", 39107, 39307, 39507),
+        new ServerInfo("47.242.192.193", 17107, 17307, 17507)
         };
         if(i == masterId){
             int batches = 10;

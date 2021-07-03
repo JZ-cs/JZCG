@@ -10,6 +10,12 @@ public class GradSeq implements Serializable {
         this.grads = new double[glen];
         this.totalEle = glen;
     }
+
+    public GradSeq(GradSeq gradSeq){
+        this.totalEle = gradSeq.totalEle;
+        this.grads = new double[this.totalEle];
+        System.arraycopy(gradSeq.grads, 0, this.grads, 0, gradSeq.totalEle);
+    }
     @Override
     public String toString() {
         return "GradSeq{" +
@@ -35,9 +41,24 @@ public class GradSeq implements Serializable {
 
     public double getGradsSum(){
         double sums = 0;
-        for(int i = 0; i < grads.length; i++){
-            sums += grads[i];
+        for (double grad : grads) {
+            sums += grad;
         }
         return sums;
+    }
+    public void replaceWith(GradSeq gradSeq) throws Exception{
+        if (gradSeq.totalEle != this.totalEle) {
+            throw new RuntimeException("Must use grads seq of same length to set!");
+        }
+        System.arraycopy(gradSeq.grads, 0, this.grads, 0, gradSeq.totalEle);
+    }
+
+    public void addWith(GradSeq gradSeq) throws Exception{
+        if (gradSeq.totalEle != this.totalEle) {
+            throw new RuntimeException("Must use grads seq of same length to add!");
+        }
+        for(int i = 0; i < this.totalEle; i++){
+            this.grads[i] += gradSeq.grads[i];
+        }
     }
 }

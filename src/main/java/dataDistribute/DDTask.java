@@ -2,6 +2,7 @@ package dataDistribute;
 
 import CG.ComputationalGraph;
 import dataDistribute.utils.GenPartitionInfo;
+import dataDistribute.utils.GradPartition;
 import dataDistribute.utils.GradPartitionMatrix;
 import dataDistribute.utils.ServerInfo;
 import org.slf4j.Logger;
@@ -71,9 +72,9 @@ public class DDTask implements Runnable{
                     System.arraycopy(CG.gradNameMap.get(gname)._data, 0, gbuff, p, len);
                 }
                 //(3).setup gPartitions for server grads exchange
-                GradPartitionMatrix gpm = new GradPartitionMatrix(parts, pinfos, gbuff, this.me);
+                GradPartition gp = new GradPartition(parts, pinfos, gbuff);
                 /*3.exchange grads with others now!*/
-                Thread gradExcger = new Thread(new GradExchanger(this.me, gpm, this.serverInfoList));
+                Thread gradExcger = new Thread(new GradExchanger(this.me, gp, this.serverInfoList));
                 gradExcger.start();
                 try {
                     gradExcger.join();
@@ -81,19 +82,11 @@ public class DDTask implements Runnable{
                     e.printStackTrace();
                     log.error(String.format("Error happens when exchanging grads in epoch: %d, batch: %d", ep, b));
                 }
-                /*4.copy gPartitions and sum to gbuff*/
+                /*4.set gradSeq back to gbuff*/
                 for(int p = 0; p < parts; p++){
-                    int StartPosIngbuff = pinfos[p][0];
-                    int len = pinfos[p][1];
-                    for(int j = 0; j < parts; j++){
-                        if(j == this.me) continue;
-                        GradSeq gradSeq = gpm.gPartitions[p][j];
-                        if(gradSeq == null) continue;
-                        for(int k = 0; k < len; k++){
-                            gbuff[StartPosIngbuff + k] += gradSeq.grads[k];
-                        }
-                    }
+                    System.arraycopy(gp.gradSeqs[p].grads, 0, gbuff, pinfos[p][0], pinfos[p][1]);
                 }
+
                 /*5.copy gbuff back to grads in CG*/
                 for(Map.Entry<String, int[]> entry : CG.gradName2posInfo.entrySet()){
                     int p = entry.getValue()[0];

@@ -1,13 +1,15 @@
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testarraycopy.java
+D:\IDEA_Projects\JZCG\src\test\java\TestNIO\testCompletableFuture.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testJobManager.java
+D:\IDEA_Projects\JZCG\src\test\java\TestNIO\testRMI.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestMaxOperation.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestSumBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestMaxBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testGenServerInfos.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSigmoidBackward.java
-D:\IDEA_Projects\JZCG\src\test\java\TestNetty.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestOpBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testRingAllReduce.java
+D:\IDEA_Projects\JZCG\src\test\java\TestNIO\TestNetty.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestCG.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSlice.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testCountDown.java
@@ -15,5 +17,5 @@ D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testDDJob.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testIP.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testPartition.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestInitialization.java
-D:\IDEA_Projects\JZCG\src\test\java\testRMI.java
+D:\IDEA_Projects\JZCG\src\test\java\TestNIO\testThreadPool.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testInitializerNetty.java

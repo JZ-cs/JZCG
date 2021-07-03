@@ -1,5 +1,6 @@
 package network.netty.gradTransfer.server;
 
+import dataDistribute.utils.GradPartition;
 import dataDistribute.utils.GradPartitionMatrix;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -19,12 +20,12 @@ public class GradTransferServer {
 
     private final int port;
     private final String selfIp;
-    public GradPartitionMatrix gpm;
+    public GradPartition gp;
 
-    public GradTransferServer(String selfIp, int port, GradPartitionMatrix gpm) {
+    public GradTransferServer(String selfIp, int port, GradPartition gp) {
         this.selfIp = selfIp;
         this.port = port;
-        this.gpm = gpm;
+        this.gp = gp;
     }
     public Channel serverChannel;
     public AtomicBoolean Closed;
@@ -50,7 +51,7 @@ public class GradTransferServer {
                             ch.pipeline().addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(Integer.MAX_VALUE,ClassResolvers.cacheDisabled(null)),
-                                    new GradTransferServerHandler(selfIp, gpm, Closed));
+                                    new GradTransferServerHandler(selfIp, gp, Closed));
                         }
                     });
 

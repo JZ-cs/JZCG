@@ -1,7 +1,8 @@
 package dataDistribute.utils;
 
 import utils.GradSeq;
-/*gPartitions is like(use 4 servers as an example):
+/* -------------------------NOW IS DEPRECATED!!!----------------------------
+gPartitions is like(use 4 servers as an example):
       s0   s1   s2   s3
 * p0 [l0] [l0] [l0] [l0]
 * p1 [l1] [l1] [l1] [l1]
