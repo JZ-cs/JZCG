@@ -1,6 +1,7 @@
 package CG;
 
 import Foundation.*;
+import Foundation.lossFunctions.Loss;
 import Foundation.lossFunctions.MSELoss;
 
 import java.awt.*;
@@ -14,6 +15,7 @@ public class ComputationalGraph implements Serializable {
 
     public Node input;
     public Node label;
+    public Loss loss;
     public HashMap<String, MultiVector> gradNameMap;
     public HashMap<String, Node> nodeNameMap;
     public HashMap<String, Node> leafNameMap;
@@ -135,7 +137,9 @@ public class ComputationalGraph implements Serializable {
 
     public Node MSELoss(Node _p, Node _y)
     {
-        return DAG.addFrom(_p, _y, Calculation.MSE_LOSS);
+        MSELoss loss = (MSELoss) DAG.addFrom(_p, _y, Calculation.MSE_LOSS);
+        this.loss = loss;
+        return (Node)loss;
     }
 
     public void gatherInfo(){

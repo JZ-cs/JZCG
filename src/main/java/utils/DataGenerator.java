@@ -27,17 +27,27 @@ public class DataGenerator {
         else return new MultiVector(dims, Calculation.SET_INCREASE);
     }
 
-    public MultiVector genMinibatchLabel(boolean randomFlag){
+    public MultiVector genMinibatchLabel(MultiVector x){
         int[] dims = {this.batchSize, 1};
         MultiVector res;
-        if(randomFlag){
-            res = new MultiVector(dims, Calculation.SET_RANDOM_UINT16);
+        /* fixed pattern
+        *  return y = sum(xw1 + b)
+        * */
+        int lastAx = x._shape.get(x._shape.size() - 1);
+        int[] dimw1 = {8, 4};
+        dimw1[0] = lastAx;
+        MultiVector w1 = new MultiVector(dimw1, Calculation.SET_INCREASE);
+        w1.mul(0.001);
+        MultiVector addmv = MultiVector.matmul(x, w1);
+        int[] dimb = new int[addmv._dims - 1];
+        for(int i = 0; i < dimb.length; i++) dimb[i] = addmv._shape.get(i + 1);
+        MultiVector b = new MultiVector(dimb, Calculation.SET_ALL_ONES);
+        MultiVector h = MultiVector.add(addmv, b);
+        int[] axes = new int[h._dims - 1];
+        for(int i = 0; i < axes.length; i++){
+            axes[i] = i + 1;
         }
-        else{
-            res =  new MultiVector(dims, Calculation.SET_INCREASE);
-        }
-
-        return res;
+        return MultiVector.sum(h, true, axes);
     }
 
     public Pair<MultiVector[], MultiVector[]> genData(boolean randomFlag){
@@ -45,7 +55,7 @@ public class DataGenerator {
         MultiVector[] y = new MultiVector[this.batches];
         for(int i = 0; i < this.batches; i++){
             x[i] = genMinibatchData(randomFlag);
-            y[i] = genMinibatchLabel(randomFlag);
+            y[i] = genMinibatchLabel(x[i]);
         }
         return Pair.make_pair(x, y);
     }

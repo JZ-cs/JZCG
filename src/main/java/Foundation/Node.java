@@ -114,6 +114,11 @@ public class Node implements Serializable {
     {
         if(this.Trainable)
         {
+//            System.out.println(this.Name);
+//            System.out.println("grad:");
+//            this._grad.print();
+//            System.out.println("Before Tensor:");
+//            this._tensor.print();
             if(this.updateAND_clearGrad)
             {
                 this._grad.mul(lr);
@@ -124,6 +129,9 @@ public class Node implements Serializable {
             {
                 this._tensor.sub(MultiVector.mul(this._grad, lr));
             }
+//            System.out.println("After Tensor:");
+//            this._tensor.print();
+//            System.out.println("----------------------------------------------------------------");
         }
         if(this.updateAND_clearGrad) this._grad.set_zeros();
     }

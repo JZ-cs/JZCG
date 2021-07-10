@@ -33,10 +33,9 @@ public class TestCG {
                 cg.DAG.transForward();
                 cg.DAG._grad.set_ones();
                 cg.DAG.transBack();
+                cg.nodeNameMap.get("w1")._grad.print();
                 cg.DAG._updateWith_Grad(0.05);
             }
         }
-        cg.nodeNameMap.get("w1")._tensor.print();
-
     }
 }
