@@ -43,17 +43,15 @@ public class MainEntrance {
             int batches = 10;
             int batchSize = 36;
             int numServers = serverInfos.length;
-            int epoches = 1;
-            double lr = 0.05;
-            int[] xShape = {32};
+            int epoches = 3;
+            double lr = 0.001;
+            int[] xShape = {16};
             ComputationalGraph CG = GenCG.genSmallCG(batchSize / numServers);
             DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
-            Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(false);
+            Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(true);
             MultiVector[] X = data.first;
             MultiVector[] Y = data.second;
-//            String ip = "10.67.45.162";//localhost
-//            ServerInfo[] serverInfos = new ServerInfo[]{new ServerInfo(ip, 19997, 20997, 21997),
-//                    new ServerInfo(ip, 22997, 23997, 24997)};
+
 
             TrainingInfo trainingInfo = new TrainingInfo(serverInfos, CG, X, Y, batches, batchSize, epoches, lr);
             JobManager jobManager = new JobManager(trainingInfo);

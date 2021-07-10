@@ -95,9 +95,8 @@ public class DDTask implements Runnable{
                     System.arraycopy(gbuff, p, CG.gradNameMap.get(gname)._data, 0, len);
                 }
                 /*6.update weights with their grads*/
-//                CG.DAG._updateWith_Grad(lr * (1.0 / batchSize));
                 CG.updateParameters(lr);
-                System.out.printf("DDTask-%d epoch:%d, batch:%d Done! %n", this.me, ep, b);
+                System.out.printf("DDTask-%d epoch:%d, batch:%d Done! current loss:%f  %n", this.me, ep, b, CG.loss.getLoss());
             }
         }
         log.info("Trainning over!");

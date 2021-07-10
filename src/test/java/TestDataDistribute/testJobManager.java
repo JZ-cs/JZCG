@@ -13,11 +13,11 @@ import java.net.InetAddress;
 
 public class testJobManager {
     public static void main(String[] args) throws Exception {
-        int batches = 10;
+        int batches = 5;
         int batchSize = 36;
         int epoches = 1;
-        double lr = 0.05;
-        int[] xShape = {32};
+        double lr = 0.001;
+        int[] xShape = {16};
         InetAddress addr = InetAddress.getLocalHost();
         String ip = addr.getHostAddress();//localhost
         ServerInfo[] serverInfos = new ServerInfo[]{
@@ -28,7 +28,7 @@ public class testJobManager {
         int numServers = serverInfos.length;
         ComputationalGraph CG = GenCG.genSmallCG(batchSize / numServers);
         DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
-        Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(false);
+        Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(true);
         MultiVector[] X = data.first;
         MultiVector[] Y = data.second;
 

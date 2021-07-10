@@ -7,19 +7,18 @@ import dataDistribute.utils.GenCG;
 import utils.DataGenerator;
 
 public class testGradDescent {
-    public static void main(String[] args) {
-        int batches = 10;
-        int batchSize = 12;
+    public static void main(String[] args) throws Exception {
+        int batches = 5;
+        int batchSize = 36;
         int[] xShape = {16};
-        ComputationalGraph cg = GenCG.genSmallCG(12);
+        ComputationalGraph cg = GenCG.genSmallCG(batchSize);
         DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
         Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(true);
         MultiVector[] X = data.first;
         MultiVector[] Y = data.second;
-        for(int ep = 0; ep < 5; ep++){
+        for(int ep = 0; ep < 1; ep++){
             for(int b = 0; b < X.length; b++){
-                cg.input._tensor.set_with(X[b]);
-                cg.label._tensor.set_with(Y[b]);
+                cg.setData(X[b], Y[b]);
                 cg.DAG.transForward();
                 cg.DAG._grad.set_ones();
                 cg.DAG.transBack();

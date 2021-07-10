@@ -205,6 +205,6 @@ public class ComputationalGraph implements Serializable {
     }
     public void updateParameters(double lr){
         int batchSize = this.input._tensor._shape.get(0);
-        this.DAG._updateWith_Grad(lr / batchSize);
+        this.DAG._updateWith_Grad(lr);
     }
 }

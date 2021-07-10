@@ -9,6 +9,7 @@ D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testGenServerInfos.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSigmoidBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestOpBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testRingAllReduce.java
+D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testGradDescent.java
 D:\IDEA_Projects\JZCG\src\test\java\TestNIO\TestNetty.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestCG.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSlice.java

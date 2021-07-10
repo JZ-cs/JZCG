@@ -70,10 +70,10 @@ public class GradTransferServer {
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
-//            Future<?> bs = bossGroup.shutdownGracefully();
-//            Future<?> ws = workerGroup.shutdownGracefully();
-//            bs.get();
-//            ws.get();
+            Future<?> bs = bossGroup.shutdownGracefully();
+            Future<?> ws = workerGroup.shutdownGracefully();
+            bs.get();
+            ws.get();
             System.out.printf("GradTransfer Server-%s listen at %d Closed!%n", this.selfIp, port);
         }
     }
