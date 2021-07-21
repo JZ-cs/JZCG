@@ -1,9 +1,9 @@
 package TestDataDistribute;
 
 import CG.ComputationalGraph;
-import Foundation.MultiVector;
-import Foundation.Pair;
-import dataDistribute.JobManager;
+import operation.MultiVector;
+import operation.Pair;
+import dataDistribute.DDJobManager;
 import dataDistribute.utils.GenCG;
 import dataDistribute.utils.ServerInfo;
 import utils.DataGenerator;
@@ -33,7 +33,7 @@ public class testJobManager {
         MultiVector[] Y = data.second;
 
         TrainingInfo trainingInfo = new TrainingInfo(serverInfos, CG, X, Y, batches, batchSize, epoches, lr);
-        JobManager jobManager = new JobManager(trainingInfo);
+        DDJobManager jobManager = new DDJobManager(trainingInfo);
         jobManager.runJob();
     }
 }

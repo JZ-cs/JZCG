@@ -1,12 +1,9 @@
 package TestCGandMultiVector;
 
-import Foundation.Calculation;
-import Foundation.MultiVector;
-import Foundation.Node;
-import Foundation.functionNodes.SigmoidNode;
-
-import java.util.HashMap;
-import java.util.Map;
+import operation.Calculation;
+import operation.MultiVector;
+import operation.Node;
+import operation.functionNodes.SigmoidNode;
 
 public class testSigmoidBackward {
     public static void main(String[] args) {

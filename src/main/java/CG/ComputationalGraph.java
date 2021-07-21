@@ -1,13 +1,11 @@
 package CG;
 
-import Foundation.*;
-import Foundation.lossFunctions.Loss;
-import Foundation.lossFunctions.MSELoss;
+import operation.*;
+import operation.layers.Linear;
+import operation.lossFunctions.Loss;
+import operation.lossFunctions.MSELoss;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.sql.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ComputationalGraph implements Serializable {
@@ -142,6 +140,12 @@ public class ComputationalGraph implements Serializable {
         return (Node)loss;
     }
 
+    public Node Linear(Node x, int hidden_size, boolean bias, int ac_fn){
+        Node linear = new Linear(x, hidden_size, bias, ac_fn);
+        this.DAG.addNonLeaf(linear);
+        return linear;
+    }
+
     public void gatherInfo(){
         gatherNodeInfo();
         gatherGradsInfo();
@@ -154,6 +158,29 @@ public class ComputationalGraph implements Serializable {
         if(this.leafNameMap == null){
             this.leafNameMap = new HashMap<>();
         }
+        for(Node nd : this.DAG.nList){
+            if(nd.isLeaf){
+                if(!this.leafNameMap.containsKey(nd.Name)){
+                    this.leafNameMap.put(nd.Name, nd);
+                }
+            }
+            if(!this.nodeNameMap.containsKey(nd.Name)){
+                this.nodeNameMap.put(nd.Name, nd);
+            }
+        }
+    }
+
+    private void updateNodeInfo(){
+        if(this.nodeNameMap == null){
+            this.nodeNameMap = new HashMap<>();
+        }
+        else this.nodeNameMap.clear();
+
+        if(this.leafNameMap == null){
+            this.leafNameMap = new HashMap<>();
+        }
+        else this.leafNameMap.clear();
+
         for(Node nd : this.DAG.nList){
             if(nd.isLeaf){
                 if(!this.leafNameMap.containsKey(nd.Name)){

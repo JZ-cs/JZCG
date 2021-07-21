@@ -1,7 +1,7 @@
 package TestCGandMultiVector;
 
-import Foundation.Calculation;
-import Foundation.MultiVector;
+import operation.Calculation;
+import operation.MultiVector;
 
 import java.util.HashMap;
 import java.util.Map;

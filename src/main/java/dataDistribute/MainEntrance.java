@@ -1,8 +1,8 @@
 package dataDistribute;
 
 import CG.ComputationalGraph;
-import Foundation.MultiVector;
-import Foundation.Pair;
+import operation.MultiVector;
+import operation.Pair;
 import dataDistribute.utils.GenCG;
 import dataDistribute.utils.ServerInfo;
 import utils.DataGenerator;
@@ -33,7 +33,7 @@ public class MainEntrance {
         else {
             throw new RuntimeException("must designate the id of current machine!");
         }
-        TaskManager taskManager;
+        DDTaskManager taskManager;
         ServerInfo[] serverInfos = new ServerInfo[]{
                 new ServerInfo("1.117.99.222", 28107, 28307, 18507),
                 new ServerInfo("118.31.46.60", 39107, 39307, 39507),
@@ -54,12 +54,12 @@ public class MainEntrance {
 
 
             TrainingInfo trainingInfo = new TrainingInfo(serverInfos, CG, X, Y, batches, batchSize, epoches, lr);
-            JobManager jobManager = new JobManager(trainingInfo);
+            DDJobManager jobManager = new DDJobManager(trainingInfo);
             TrainingInfo[] trainingInfos = jobManager.getPartitionTrainingInfos();
-            taskManager = new TaskManager(serverInfos, i, masterId, trainingInfos);
+            taskManager = new DDTaskManager(serverInfos, i, masterId, trainingInfos);
         }
         else{
-            taskManager = new TaskManager(serverInfos, i, masterId);
+            taskManager = new DDTaskManager(serverInfos, i, masterId);
         }
         Thread t = new Thread(new runThread(taskManager));
         t.start();

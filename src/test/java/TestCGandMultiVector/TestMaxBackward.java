@@ -1,12 +1,9 @@
 package TestCGandMultiVector;
 
-import Foundation.Calculation;
-import Foundation.MaxNode;
-import Foundation.MultiVector;
-import Foundation.Node;
-
-import java.util.HashMap;
-import java.util.Map;
+import operation.Calculation;
+import operation.MaxNode;
+import operation.MultiVector;
+import operation.Node;
 
 public class TestMaxBackward {
     public static void main(String[] args) {

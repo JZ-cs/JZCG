@@ -36,7 +36,9 @@ public class ServerInfo implements Serializable {
         }
         return serverInfos;
     }
-
+    public ServerInfo copySelf(){
+        return new ServerInfo(this.ip, this.acqInfoListenPort, this.syncAckListenPort, this.gradListenPort);
+    }
     @Override
     public String toString() {
         return "ServerInfo{" +

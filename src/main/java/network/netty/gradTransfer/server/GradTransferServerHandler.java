@@ -45,12 +45,6 @@ public class GradTransferServerHandler extends ChannelInboundHandlerAdapter {
         this.Closed.set(true);
     }
 
-    // @Override
-    // public void channelReadComplete(ChannelHandlerContext ctx) throws
-    // Exception {
-    // ctx.flush();
-    // ctx.close();
-    // }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)

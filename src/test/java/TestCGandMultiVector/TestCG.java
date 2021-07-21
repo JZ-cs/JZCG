@@ -1,12 +1,9 @@
 package TestCGandMultiVector;
 
 import CG.ComputationalGraph;
-import Foundation.*;
-import Foundation.lossFunctions.MSELoss;
+import operation.*;
 import dataDistribute.utils.GenCG;
 import utils.DataGenerator;
-
-import java.util.Map;
 
 public class TestCG {
     public static void main(String[] args) {

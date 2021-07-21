@@ -1,7 +1,7 @@
 package TestCGandMultiVector;
 
-import Foundation.MultiVector;
-import Foundation.Pair;
+import operation.MultiVector;
+import operation.Pair;
 import utils.DataGenerator;
 
 public class testSlice {

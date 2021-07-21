@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.TrainingInfo;
 
-/*DD stands for "data dstributed"*/
+/*DD stands for "Data Dstributed"*/
 public class DDJob {
     public static final Logger log = LoggerFactory.getLogger(DDJob.class);
     public TrainingInfo metaTrainingInfo;

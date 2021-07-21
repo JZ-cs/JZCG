@@ -1,9 +1,9 @@
 package TestCGandMultiVector;
 
-import Foundation.Calculation;
-import Foundation.MultiVector;
-import Foundation.Node;
-import Foundation.OpNode;
+import operation.Calculation;
+import operation.MultiVector;
+import operation.Node;
+import operation.OpNode;
 
 public class TestOpBackward {
     public static void main(String[] args) {

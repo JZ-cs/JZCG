@@ -13,6 +13,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import io.netty.util.Attribute;
 import io.netty.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 

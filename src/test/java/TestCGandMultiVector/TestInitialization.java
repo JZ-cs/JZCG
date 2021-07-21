@@ -1,7 +1,7 @@
 package TestCGandMultiVector;
 
-import Foundation.Calculation;
-import Foundation.MultiVector;
+import operation.Calculation;
+import operation.MultiVector;
 
 public class TestInitialization {
     public static void main(String[] args) {

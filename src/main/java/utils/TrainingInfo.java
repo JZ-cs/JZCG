@@ -1,7 +1,7 @@
 package utils;
 
 import CG.ComputationalGraph;
-import Foundation.MultiVector;
+import operation.MultiVector;
 import dataDistribute.utils.ServerInfo;
 
 import java.io.Serializable;

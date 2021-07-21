@@ -1,14 +1,8 @@
 package utils;
 
-import Foundation.Calculation;
-import Foundation.MultiVector;
-import Foundation.Pair;
-import jdk.jfr.Unsigned;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import operation.Calculation;
+import operation.MultiVector;
+import operation.Pair;
 
 public class DataGenerator {
     public int batches;

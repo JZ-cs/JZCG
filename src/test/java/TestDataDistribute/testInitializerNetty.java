@@ -1,8 +1,8 @@
 package TestDataDistribute;
 
 import CG.ComputationalGraph;
-import Foundation.MultiVector;
-import Foundation.Pair;
+import operation.MultiVector;
+import operation.Pair;
 import dataDistribute.utils.GenCG;
 import dataDistribute.utils.ServerInfo;
 import network.netty.initializer.iclient.InitializerClient;

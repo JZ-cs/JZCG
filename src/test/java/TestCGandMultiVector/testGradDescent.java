@@ -1,8 +1,8 @@
 package TestCGandMultiVector;
 
 import CG.ComputationalGraph;
-import Foundation.MultiVector;
-import Foundation.Pair;
+import operation.MultiVector;
+import operation.Pair;
 import dataDistribute.utils.GenCG;
 import utils.DataGenerator;
 
