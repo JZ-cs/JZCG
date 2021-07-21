@@ -180,14 +180,20 @@ public class Moudle extends Node{
     //with return Node
     public Node addNewNode_from(Node ch1, Node ch2, int opSign) throws Exception
     {
-        if((!this.Preds.contains(ch1) && this.nMap.get(ch1) == null) || (!this.Preds.contains(ch2) && this.nMap.get(ch2) == null))
-        {
-             String ex = "Exist";
-             String nex = "NON-EXIST!";
-             String first_info = (this.nMap.get(ch1) == null ? nex : ex);
-             String second_info = (this.nMap.get(ch2) == null ? nex : ex);
-             throw new Exception(String.format("Child Node %s %s in Graph, Child Node %s %s in Graph.", ch1.getName(), first_info, ch2.getName(), second_info));
+        if(!this.Preds.contains(ch1) && !this.nMap.containsKey(ch1)){
+            this.addLeaf(ch1);
         }
+        if(!this.Preds.contains(ch2) && !this.nMap.containsKey(ch2)){
+            this.addLeaf(ch2);
+        }
+//        if((!this.Preds.contains(ch1) && this.nMap.get(ch1) == null) || (!this.Preds.contains(ch2) && this.nMap.get(ch2) == null))
+//        {
+//             String ex = "Exist";
+//             String nex = "NON-EXIST!";
+//             String first_info = (this.nMap.get(ch1) == null ? nex : ex);
+//             String second_info = (this.nMap.get(ch2) == null ? nex : ex);
+//             throw new Exception(String.format("Child Node %s %s in Graph, Child Node %s %s in Graph.", ch1.getName(), first_info, ch2.getName(), second_info));
+//        }
         this._edgesNum += 2;
         switch(opSign){
             case Calculation.ADD: {//add
@@ -240,10 +246,8 @@ public class Moudle extends Node{
 
     public Node addNewNode_from(Node ch1, int opSign) throws Exception
     {
-        if(this.nMap.get(ch1) == null)
-        {
-            String first_info = (this.nMap.get(ch1) == null ? "NON-EXIST!" : "Exist");
-            throw new Exception(String.format("Child Node %s %s in Graph.", ch1.getName(), first_info));
+        if(!this.Preds.contains(ch1) && !this.nMap.containsKey(ch1)){
+            this.addLeaf(ch1);
         }
         this._edgesNum += 1;
         switch(opSign){
@@ -449,5 +453,30 @@ public class Moudle extends Node{
             }
         }
         if(this.updateAND_clearGrad) this._grad.set_zeros();
+    }
+
+    public static boolean exitBoundary(Moudle moudle){
+        for(Node node : moudle.nList){
+            if(node.isMoudle){
+                if(exitBoundary((Moudle) node)) return true;
+                for(Node pred : node.Preds){
+                    if(!moudle.nMap.containsKey(pred) && !moudle.Preds.contains(pred)){
+                        return true;
+                    }
+                }
+            }
+            else{
+                if(node.pred[0] != null){
+                    if(!moudle.nMap.containsKey(node.pred[0]) && !moudle.Preds.contains(node.pred[0])) return true;
+                }
+                if(node.pred[1] != null){
+                    if(!moudle.nMap.containsKey(node.pred[1]) && !moudle.Preds.contains(node.pred[1])) return true;
+                }
+            }
+            for(Node succ : node.succList){
+                if(!moudle.nMap.containsKey(succ)) return true;
+            }
+        }
+        return false;
     }
 }

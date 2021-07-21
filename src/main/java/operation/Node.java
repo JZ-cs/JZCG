@@ -185,7 +185,7 @@ public class Node implements Serializable {
             succList.add(sb.toString());
         }
         StringBuilder connectionInfo = new StringBuilder();
-        connectionInfo.append("{");
+        connectionInfo.append(String.format("Links of %s(%s):  {", this.Name, this.id));
         for(int i = 0; i < preList.size(); i++){
             connectionInfo.append(preList.get(i));
             if(i != preList.size() - 1){
