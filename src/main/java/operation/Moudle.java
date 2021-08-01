@@ -9,7 +9,7 @@ import java.util.*;
 public class Moudle extends Node{
     public int _nodesNum = 0;
     public int _edgesNum = 0;
-    public int _totalweights = 0;
+    public int _totalParameters = 0;
     public boolean insideConnected = false;
     private boolean initialized = false;
     /*output is the gate connecting this DAG to others and its inside parts,

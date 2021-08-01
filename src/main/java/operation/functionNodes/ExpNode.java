@@ -1,5 +1,6 @@
 package operation.functionNodes;
 
+import operation.Calculation;
 import operation.MultiVector;
 import operation.Node;
 
@@ -8,14 +9,18 @@ public class ExpNode extends Node {
         super(ch1);
         this.Name = "ExpNode-" + this.id;
 
-        this._tensor = MultiVector.exp(ch1._tensor);
-        this._grad = MultiVector.MultiVector_like(this._tensor);
+//        this._tensor = MultiVector.exp(ch1._tensor);
+//        this._grad = MultiVector.MultiVector_like(this._tensor);
     }
 
     @Override
     public void transForward() {
         super.transForward();
-        this._tensor = MultiVector.exp(this.pred[0]._tensor);
+        if(this._tensor == null){
+            this._tensor = MultiVector.exp(this.pred[0]._tensor);
+            this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        }
+        else MultiVector.exp(this.pred[0]._tensor, this._tensor);
     }
 
     @Override

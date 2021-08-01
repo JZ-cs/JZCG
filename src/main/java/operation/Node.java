@@ -22,7 +22,7 @@ public class Node implements Serializable {
     public Node[] pred = new Node [2];
     public HashSet<Node> Preds = null;
     public ArrayList<Node> succList = new ArrayList<>();
-
+    public int dataInitializeStrategy;
     {
         this.id = exCount++;
         this.isMoudle = false;
@@ -40,12 +40,11 @@ public class Node implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        Node tn = (Node)obj;
-        if(tn instanceof Node)
+        if(obj instanceof Node)
         {
+            Node tn = (Node)obj;
             if(this == tn) return true;
-            else if(tn.id == this.id) return true;
-            else return false;
+            else return tn.id == this.id;
         }
         return false;
     }
@@ -59,6 +58,17 @@ public class Node implements Serializable {
     {
         this._tensor = _t;
         this._grad = MultiVector.MultiVector_like(_t, 0);
+    }
+    public Node(int[] dims)
+    {
+        this._tensor = new MultiVector(dims, Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
+    }
+
+    public Node(ArrayList<Integer> dims)
+    {
+        this._tensor = new MultiVector(dims, Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
     }
 
     public Node(Node ch1, Node ch2)
@@ -90,6 +100,12 @@ public class Node implements Serializable {
 
     public void transForward()
     {
+        //tensor's or grad's data of a leaf node is null, so it's not input or label,
+        //since both of them should be set when before the training starts
+        if(this.isLeaf && this._tensor._data == null){
+            this._tensor.initializeData(this.dataInitializeStrategy);
+            this._grad.initializeData(this.dataInitializeStrategy);
+        }
         // Forward to successors
         for(Node succ : this.succList)
         {

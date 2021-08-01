@@ -14,8 +14,6 @@ public class MaxNode extends Node{
         this.axes = new int[axes.length];
         System.arraycopy(axes, 0, this.axes, 0, axes.length);
         this.markers = new HashMap<>();
-        this._tensor = MultiVector.sum(ch1._tensor, retain_shape, axes);
-        this._grad = MultiVector.MultiVector_like(this._tensor);
     }
     public MaxNode(Node ch1){
         super(ch1);
@@ -48,7 +46,11 @@ public class MaxNode extends Node{
     public void transForward() {
         super.transForward();
         markers.clear();
-        this._tensor = MultiVector.max(this.pred[0]._tensor, markers, this.retain_shape, this.axes);
+        if(this._tensor == null){
+            this._tensor = MultiVector.max(this.pred[0]._tensor, markers, this.retain_shape, this.axes);
+            this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        }
+        else MultiVector.max(this._tensor, this.pred[0]._tensor, markers, this.retain_shape, this.axes);
     }
 
     @Override

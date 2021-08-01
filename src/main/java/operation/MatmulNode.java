@@ -1,5 +1,7 @@
 package operation;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class MatmulNode extends Node
@@ -10,20 +12,23 @@ public class MatmulNode extends Node
     public MatmulNode(Node ch1, Node ch2) //mm tensor and tensor
     {
         super(ch1, ch2);
-        this._tensor = MultiVector.matmul(ch1._tensor, ch2._tensor);
-        this._grad = MultiVector.MultiVector_like(this._tensor, 0);
+//        this._tensor = MultiVector.matmul(ch1._tensor, ch2._tensor);
+//        this._grad = MultiVector.MultiVector_like(this._tensor, 0);
     }
 
     @Override
     public void transForward() {
-        // TODO Auto-generated method stub
         super.transForward();
-        this._tensor = MultiVector.matmul(this.pred[0]._tensor, this.pred[1]._tensor);
+        if(this._tensor == null){
+            this._tensor = MultiVector.matmul(this.pred[0]._tensor, this.pred[1]._tensor);
+            assert this._tensor != null;
+            this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        }
+        else MultiVector.matmul(this.pred[0]._tensor, this.pred[1]._tensor, this._tensor);
     }
 
     @Override
     public void transBack() {
-        // TODO Auto-generated method stub
         super.transBack();
 
         //transpose the last two axes!

@@ -9,7 +9,7 @@ public class Pair<F,S>{
     {
 
         // Pair<F,S> rpair = new Pair(_first, _second);
-        Pair<F,S> rpair = new Pair();
+        Pair<F,S> rpair = new Pair<>();
         rpair.first = _first;
         rpair.second = _second;
         return rpair;

@@ -8,11 +8,9 @@ public class SumNode extends Node{
         this.Name = "SumNode-" + this.id;
         this.retain_shape = retain_shape;
         this.axes = new int[axes.length];
-        for(int i = 0; i < axes.length; i++){
-            this.axes[i] = axes[i];
-        }
-        this._tensor = MultiVector.sum(ch1._tensor, retain_shape, axes);
-        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        System.arraycopy(axes, 0, this.axes, 0, axes.length);
+//        this._tensor = MultiVector.sum(ch1._tensor, retain_shape, axes);
+//        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
     }
 
     public SumNode(Node ch1){
@@ -22,11 +20,9 @@ public class SumNode extends Node{
     public void realInit(boolean retain_shape, int...axes){
         this.retain_shape = retain_shape;
         this.axes = new int[axes.length];
-        for(int i = 0; i < axes.length; i++){
-            this.axes[i] = axes[i];
-        }
-        this._tensor = MultiVector.sum(this.pred[0]._tensor, retain_shape, axes);
-        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        System.arraycopy(axes, 0, this.axes, 0, axes.length);
+//        this._tensor = MultiVector.sum(this.pred[0]._tensor, retain_shape, axes);
+//        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
     }
 
     public void setRetain_shape(boolean retain_shape_flag){
@@ -36,9 +32,7 @@ public class SumNode extends Node{
         return this.retain_shape;
     }
     public void setAxes(int[] _axes){
-        for(int i = 0; i < axes.length; i++){
-            this.axes[i] = _axes[i];
-        }
+        System.arraycopy(_axes, 0, this.axes, 0, axes.length);
     }
     public int[] getAxes(){
         return this.axes;
@@ -47,7 +41,11 @@ public class SumNode extends Node{
     @Override
     public void transForward() {
         super.transForward();
-        this._tensor = MultiVector.sum(pred[0]._tensor, this.retain_shape, this.axes);
+        if(this._tensor == null){
+            this._tensor = MultiVector.sum(pred[0]._tensor, this.retain_shape, this.axes);
+            this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        }
+        else MultiVector.sum(this._tensor, pred[0]._tensor, this.retain_shape, this.axes);
     }
 
     @Override

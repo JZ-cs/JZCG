@@ -9,14 +9,18 @@ public class SigmoidNode extends Node {
         super(ch1);
         this.Name = "SigmoidNode-" + this.id;
 
-        this._tensor = MultiVector.sigmoid(ch1._tensor);
-        this._grad = MultiVector.MultiVector_like(this._tensor);
+//        this._tensor = MultiVector.sigmoid(ch1._tensor);
+//        this._grad = MultiVector.MultiVector_like(this._tensor);
     }
 
     @Override
     public void transForward() {
         super.transForward();
-        this._tensor = MultiVector.sigmoid(this.pred[0]._tensor);
+        if(this._tensor == null){
+            this._tensor = MultiVector.sigmoid(this.pred[0]._tensor);
+            this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        }
+        else MultiVector.sigmoid(this.pred[0]._tensor, this._tensor);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class MSELoss extends Node implements Loss {
         this._tensor = new MultiVector(0.0);
         this._grad = new MultiVector(0.0);
         this.Name = "MSELoss-" + this.id;
-        int batchNum = this.pred[0]._tensor._shape.get(0);
+        int batchNum = this.pred[1]._tensor._shape.get(0);
     }
 
     @Override

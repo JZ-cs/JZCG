@@ -4,13 +4,18 @@ import operation.*;
 import operation.layers.Linear;
 import operation.lossFunctions.Loss;
 import operation.lossFunctions.MSELoss;
+import operation.optimizer.Adam;
+import operation.optimizer.Optimizer;
+import utils.GraphTravels;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.function.BiFunction;
 
 public class ComputationalGraph implements Serializable {
     public Moudle DAG;
-
+    public Optimizer optimizer;
     public Node input;
     public Node label;
     public Loss loss;
@@ -182,18 +187,21 @@ public class ComputationalGraph implements Serializable {
         else this.leafNameMap.clear();
 
         for(Node nd : this.DAG.nList){
-            if(nd.isLeaf){
-                if(!this.leafNameMap.containsKey(nd.Name)){
-                    this.leafNameMap.put(nd.Name, nd);
-                }
-            }
             if(!this.nodeNameMap.containsKey(nd.Name)){
                 this.nodeNameMap.put(nd.Name, nd);
             }
         }
+        HashSet<Node> leaves = new HashSet<>();
+        GraphTravels.travelForLeaves(this.DAG.nList, leaves);
+        for(Node le : leaves){
+            this.leafNameMap.putIfAbsent(le.getName(), le);
+        }
     }
 
     private void gatherGradsInfo(){
+        if(this.leafNameMap == null){
+            updateNodeInfo();
+        }
         if(this.gradNameMap == null){
             this.gradNameMap = new HashMap<>();
         }
@@ -201,7 +209,7 @@ public class ComputationalGraph implements Serializable {
             this.gradName2posInfo = new HashMap<>();
         }
         int pos = 0;
-        for(Node leafNode: this.DAG.Leaves){
+        for(Node leafNode: this.leafNameMap.values()){
             if(leafNode.Trainable && !gradNameMap.containsKey(leafNode.Name)){
                 this.gradNameMap.put(leafNode.Name, leafNode._grad);
                 int[] posInfo = new int[2];
@@ -232,6 +240,9 @@ public class ComputationalGraph implements Serializable {
     }
     public void updateParameters(double lr){
         int batchSize = this.input._tensor._shape.get(0);
-        this.DAG._updateWith_Grad(lr);
+        if(this.optimizer == null) this.DAG._updateWith_Grad(lr);
+        else{
+            this.optimizer.updateGrads();
+        }
     }
 }

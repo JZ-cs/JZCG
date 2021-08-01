@@ -3,17 +3,15 @@ package operation;
 import java.util.ArrayList;
 
 public class OpNode extends Node{
-    public boolean broadcastFlag;
     public int opSign;
     public OpNode(Node ch1, Node ch2, int opSign){
         super(ch1, ch2);
-        this.broadcastFlag = needBroadcast();
         this.opSign = opSign;
         this.Name = getName();
         //initialize the _tensor here is OK, however not here is to avoid the switch thing,
         //may alter to it later.
-        this._tensor = new MultiVector(getOpResultShape(ch1._tensor, ch2._tensor));
-        this._grad = MultiVector.MultiVector_like(this._tensor);
+//        this._tensor = MultiVector.MultiVector_like(getOpResultShape(ch1._tensor, ch2._tensor), Calculation.SET_EMPTY_DATA);
+//        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
     }
     public String getName(){
         String prefix = null;
@@ -51,19 +49,39 @@ public class OpNode extends Node{
         super.transForward();
         switch (this.opSign){
             case Calculation.ADD:{
-                this._tensor = MultiVector.add(pred[0]._tensor, pred[1]._tensor);
+                if(this._tensor == null){
+                    this._tensor = MultiVector.add(pred[0]._tensor, pred[1]._tensor);
+                    assert this._tensor != null;
+                    this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+                }
+                else MultiVector.add(pred[0]._tensor, pred[1]._tensor, this._tensor);
                 break;
             }
             case Calculation.SUB:{
-                this._tensor = MultiVector.sub(pred[0]._tensor, pred[1]._tensor);
+                if(this._tensor == null){
+                    this._tensor = MultiVector.sub(pred[0]._tensor, pred[1]._tensor);
+                    assert this._tensor != null;
+                    this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+                }
+                else MultiVector.sub(pred[0]._tensor, pred[1]._tensor, this._tensor);
                 break;
             }
             case Calculation.MUL:{
-                this._tensor = MultiVector.mul(pred[0]._tensor, pred[1]._tensor);
+                if(this._tensor == null){
+                    this._tensor = MultiVector.mul(pred[0]._tensor, pred[1]._tensor);
+                    assert this._tensor != null;
+                    this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+                }
+                else MultiVector.mul(pred[0]._tensor, pred[1]._tensor, this._tensor);
                 break;
             }
             case Calculation.DIV:{
-                this._tensor = MultiVector.div(pred[0]._tensor, pred[1]._tensor);
+                if(this._tensor == null){
+                    this._tensor = MultiVector.div(pred[0]._tensor, pred[1]._tensor);
+                    assert this._tensor != null;
+                    this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+                }
+                else MultiVector.div(pred[0]._tensor, pred[1]._tensor, this._tensor);
                 break;
             }
         }

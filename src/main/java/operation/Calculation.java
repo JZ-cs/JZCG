@@ -12,7 +12,6 @@ public class Calculation {
     public static final int SET_DOUBLE_MAX = 3;
     public static final int SET_DOUBLE_MIN = 4;
     public static final int SET_RANDOM_UINT16 = 5;
-    public static final int SET_NONE = 6;
 
     public static final int ADD = 0;
     public static final int SUB = 1;

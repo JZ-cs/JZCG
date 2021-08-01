@@ -46,14 +46,14 @@ public class GradSeq implements Serializable {
         }
         return sums;
     }
-    public void replaceWith(GradSeq gradSeq) throws Exception{
+    public void replaceWith(GradSeq gradSeq){
         if (gradSeq.totalEle != this.totalEle) {
             throw new RuntimeException("Must use grads seq of same length to set!");
         }
         System.arraycopy(gradSeq.grads, 0, this.grads, 0, gradSeq.totalEle);
     }
 
-    public void addWith(GradSeq gradSeq) throws Exception{
+    public void addWith(GradSeq gradSeq) {
         if (gradSeq.totalEle != this.totalEle) {
             throw new RuntimeException("Must use grads seq of same length to add!");
         }

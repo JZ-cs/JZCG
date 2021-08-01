@@ -1,14 +1,15 @@
 package TestCGandMultiVector;
 
+import operation.Calculation;
+import operation.MultiVector;
+import operation.Node;
+
 public class testarraycopy {
     public static void main(String[] args) {
-        double[] x = new double[10];
-        double[] y = new double[120];
-        for(int i = 0; i < x.length; i++) x[i] = i * 100;
-        for(int i = 0; i < y.length; i++) y[i] = i;
-        System.arraycopy(x, 0, y, 10, x.length);
-        for(int i = 0; i < y.length; i++){
-            System.out.print(y[i] + "  ");
-        }
+        int[] dims = {2,3,4};
+        MultiVector mv = new MultiVector(dims, Calculation.SET_ALL_ONES);
+        mv.mul(2);
+        mv.mul(mv);
+        mv.print();
     }
 }
