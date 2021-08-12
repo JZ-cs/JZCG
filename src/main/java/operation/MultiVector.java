@@ -113,12 +113,12 @@ public class MultiVector implements Serializable{
                 }
                 break;
             }
-            case Calculation.SET_RANDOM_UINT16:
+            case Calculation.SET_NORMALIZE:
             {
                 Random rand = new Random();
                 for(int i = 0; i < this.total_eNum; i++)
                 {
-                    this._data[i] = rand.nextInt(1 << 16);
+                    this._data[i] = rand.nextGaussian();
                 }
                 break;
             }
@@ -505,12 +505,12 @@ public class MultiVector implements Serializable{
         }
         int sp_self = this._shape.size() - 1;
         int sp1 = mv1._shape.size() - 1;
-        boolean needBoradcast = false;
+        boolean needBroadcast = false;
         while(sp1 >= 0)
         {
             if(!this._shape.get(sp_self).equals(mv1._shape.get(sp1)))
             {
-                needBoradcast = true;
+                needBroadcast = true;
                 if(mv1._shape.get(sp1) != 1) throw new Exception(String.format("Dimension NOT match and can NOT broadcast(inplace)! Only the second can broadcast, however at dimension %s and dimension %s, got dimension size %s -- %s!", sp_self, sp1, this._shape.get(sp_self), mv1._shape.get(sp1)));
             }
             mv1.temp_shape.add(mv1._shape.get(sp1));
@@ -519,7 +519,7 @@ public class MultiVector implements Serializable{
         }
         if(sp_self >= 0)
         {
-            needBoradcast = true;
+            needBroadcast = true;
             while(sp_self >= 0)
             {
                 mv1.temp_shape.add(1);
@@ -531,7 +531,7 @@ public class MultiVector implements Serializable{
         Collections.reverse(mv1.temp_shape);
 
 
-        if(!needBoradcast)
+        if(!needBroadcast)
         {
             switch(op)
             {
@@ -697,7 +697,7 @@ public class MultiVector implements Serializable{
     {
         MultiVector mv2 = new MultiVector(c);
         try{
-            return _op_with_check(0, mv1, mv2);
+            return _op_with_check(0, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -707,7 +707,7 @@ public class MultiVector implements Serializable{
     public static MultiVector add(MultiVector mv1, MultiVector mv2)
     {
         try{
-            return _op_with_check(0, mv1, mv2);
+            return _op_with_check(0, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -738,7 +738,7 @@ public class MultiVector implements Serializable{
     {
         MultiVector mv2 = new MultiVector(c);
         try{
-            return _op_with_check(1, mv1, mv2);
+            return _op_with_check(1, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -748,7 +748,7 @@ public class MultiVector implements Serializable{
     public static MultiVector sub(MultiVector mv1, MultiVector mv2)
     {
         try{
-            return _op_with_check(1, mv1, mv2);
+            return _op_with_check(1, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -779,7 +779,7 @@ public class MultiVector implements Serializable{
     {
         MultiVector mv2 = new MultiVector(c);
         try{
-            return _op_with_check(2, mv1, mv2);
+            return _op_with_check(2, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -789,7 +789,7 @@ public class MultiVector implements Serializable{
     public static MultiVector mul(MultiVector mv1, MultiVector mv2)
     {
         try{
-            return _op_with_check(2, mv1, mv2);
+            return _op_with_check(2, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -820,7 +820,7 @@ public class MultiVector implements Serializable{
     {
         MultiVector mv2 = new MultiVector(c);
         try{
-            return _op_with_check(3, mv1, mv2);
+            return _op_with_check(3, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -830,7 +830,7 @@ public class MultiVector implements Serializable{
     public static MultiVector div(MultiVector mv1, MultiVector mv2)
     {
         try{
-            return _op_with_check(3, mv1, mv2);
+            return _op_with_check(3, mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -891,10 +891,11 @@ public class MultiVector implements Serializable{
         if(res_shape.isEmpty()) throw new Exception("Why the hell the result is empty???");
         // reverse shape list
         Collections.reverse(res_shape);
+
         return res_shape;
     }
 
-    public static MultiVector _op_with_check(int op, MultiVector mv1, MultiVector mv2) throws Exception
+    public static MultiVector _op_with_check(int op, MultiVector mv1, MultiVector mv2, boolean actualCal) throws Exception
     {
         mv1.temp_shape.clear();
         mv1.temp_component_eNum.clear();
@@ -904,12 +905,12 @@ public class MultiVector implements Serializable{
         ArrayList<Integer> res_shape = new ArrayList<>();
         int sp1 = mv1._shape.size() - 1;
         int sp2 = mv2._shape.size() - 1;
-        boolean needBoradcast = false;
+        boolean needBroadcast = false;
         while(sp1 >= 0 && sp2 >= 0)
         {
             if(!mv1._shape.get(sp1).equals(mv2._shape.get(sp2)))
             {
-                needBoradcast = true;
+                needBroadcast = true;
                 if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1){
                     throw new Exception(String.format("op=(%s), Dimension NOT match and can NOT broadcast! at dimension %d of operand-1 and dimension %d of operand-2, got dimension size %d -- %d!", Calculation.BiOpSign2String[op], sp1, sp2, mv1._shape.get(sp1), mv2._shape.get(sp2)));
                 }
@@ -922,7 +923,7 @@ public class MultiVector implements Serializable{
         }
         if(sp1 >= 0)
         {
-            needBoradcast = true;
+            needBroadcast = true;
             while(sp1 >= 0)
             {
                 res_shape.add(mv1._shape.get(sp1));
@@ -933,7 +934,7 @@ public class MultiVector implements Serializable{
         }
         else if(sp2 >= 0)
         {
-            needBoradcast = true;
+            needBroadcast = true;
             while(sp2 >= 0)
             {
                 res_shape.add(mv2._shape.get(sp2));
@@ -949,16 +950,6 @@ public class MultiVector implements Serializable{
         Collections.reverse(mv2.temp_shape);
         Collections.reverse(res_shape);
 
-        int[] dims_size = new int[res_shape.size()];
-        for(int i = 0; i < res_shape.size(); i++) dims_size[i] = res_shape.get(i);
-        MultiVector res = new MultiVector(dims_size, 0);
-        res.needBroadcast = needBoradcast;
-
-        if(!needBoradcast)
-        {
-            _op_nonRecur(op, mv1, mv2, res);
-            return res;
-        }
         //_component_eNum needs to change
         int tot1 = mv1.total_eNum;
         int tot2 = mv2.total_eNum;
@@ -969,6 +960,20 @@ public class MultiVector implements Serializable{
             mv2.temp_component_eNum.add(tot2 / mv2.temp_shape.get(i));
             tot2 /= mv2.temp_shape.get(i);
         }
+
+        int[] dims_size = new int[res_shape.size()];
+        for(int i = 0; i < res_shape.size(); i++) dims_size[i] = res_shape.get(i);
+        if(!actualCal){
+            return new MultiVector(dims_size, Calculation.SET_EMPTY_DATA);
+        }
+        MultiVector res = new MultiVector(dims_size, 0);
+        res.needBroadcast = needBroadcast;
+        if(!needBroadcast)
+        {
+            _op_nonRecur(op, mv1, mv2, res);
+            return res;
+        }
+
         /* recursive function*/
         _op_recur(op, mv1, mv2, res, 0, 0, 0, 0, 0, 0, 0);
         return res;
@@ -1100,11 +1105,78 @@ public class MultiVector implements Serializable{
         return res;
     }
 
+    public static ArrayList<Integer> _getMatmulResultShape(MultiVector mv1, MultiVector mv2) throws Exception {
+        if(mv1._dims < 2 || mv2._dims < 2) throw new Exception(String.format("When performing matrix multiplication, two MultiVectors should have at least 2 dimensions, while got %d and %d !", mv1._dims, mv2._dims));
+
+        if(!mv1._shape.get(mv1._dims - 1).equals(mv2._shape.get(mv2._dims - 2)))
+        {
+            throw new Exception(String.format("When performing matrix multiplication, the last dimension size of the first MultiVector should match the second last dimension size of the second MultiVector, while got %d and %d !", mv1._shape.get(mv1._dims - 1), mv2._shape.get(mv2._dims - 2)));
+        }
+
+        ArrayList<Integer> res_shape = new ArrayList<>();
+        res_shape.add(mv2._shape.get(mv2._dims - 1));
+        res_shape.add(mv1._shape.get(mv1._dims - 2));
+
+        int sp1 = mv1._shape.size() - 3;
+        int sp2 = mv2._shape.size() - 3;
+        while(sp1 >= 0 && sp2 >= 0)
+        {
+            if(!mv1._shape.get(sp1).equals(mv2._shape.get(sp2)))
+            {
+                if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1)
+                {
+                    StringBuilder dims_str1 = new StringBuilder("(");
+                    StringBuilder dims_str2 = new StringBuilder("(");
+                    for(int i = 0; i < mv1._dims; i++)
+                    {
+                        if(i < mv1._dims - 2) dims_str1.append(String.valueOf(mv1._shape.get(i)));
+                        else dims_str1.append("*");
+                        if(i < mv1._dims - 1) dims_str1.append(", ");
+                        else dims_str1.append(")");
+                    }
+                    for(int i = 0; i < mv2._dims; i++)
+                    {
+                        if(i < mv2._dims - 2) dims_str2.append(String.valueOf(mv2._shape.get(i)));
+                        else dims_str2.append("*");
+                        if(i < mv2._dims - 1) dims_str2.append(", ");
+                        else dims_str2.append(")");
+                    }
+                    String format_str = "Dimension NOT match and can NOT broadcast between" + dims_str1  + " and " + dims_str2  + ", at dimension %s and dimension %s, got dimension size %s -- %s!";
+                    throw new Exception(String.format(format_str, sp1, sp2, mv1._shape.get(sp1), mv2._shape.get(sp2)));
+                }
+            }
+            res_shape.add(Math.max(mv1._shape.get(sp1), mv2._shape.get(sp2)));
+            sp1--;
+            sp2--;
+        }
+        if(sp1 >= 0)
+        {
+            while(sp1 >= 0)
+            {
+                res_shape.add(mv1._shape.get(sp1));
+                sp1--;
+            }
+        }
+        else if(sp2 >= 0)
+        {
+            while(sp2 >= 0)
+            {
+                res_shape.add(mv2._shape.get(sp2));
+                sp2--;
+            }
+        }
+
+        if(res_shape.isEmpty()) throw new Exception("Why the hell the result is empty???");
+        // reverse shape list
+        Collections.reverse(res_shape);
+
+        return res_shape;
+    }
     public static MultiVector matmul(MultiVector mv1, MultiVector mv2)
     {
         MultiVector res = null;
         try{
-            res = _matmul(mv1, mv2);
+            res = _matmul(mv1, mv2, true);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1115,7 +1187,7 @@ public class MultiVector implements Serializable{
     {
         _matmul_recur(mv1, mv2, res, 0, 0, 0, 0);
     }
-    public static MultiVector _matmul(MultiVector mv1, MultiVector mv2) throws Exception
+    public static MultiVector _matmul(MultiVector mv1, MultiVector mv2, boolean actualCal) throws Exception
     {
         mv1.temp_shape.clear();
         mv1.temp_component_eNum.clear();
@@ -1126,7 +1198,7 @@ public class MultiVector implements Serializable{
 
         if(!mv1._shape.get(mv1._dims - 1).equals(mv2._shape.get(mv2._dims - 2)))
         {
-            throw new Exception(String.format("When performing matrix multiplication, the last dimension size of the first MultiVector shuld match the second last dimension size of the second MultiVector, while got %d and %d !", mv1._shape.get(mv1._dims - 1), mv2._shape.get(mv2._dims - 2)));
+            throw new Exception(String.format("When performing matrix multiplication, the last dimension size of the first MultiVector should match the second last dimension size of the second MultiVector, while got %d and %d !", mv1._shape.get(mv1._dims - 1), mv2._shape.get(mv2._dims - 2)));
         }
 
         mv1.temp_shape.add(mv1._shape.get(mv1._dims - 1));
@@ -1140,29 +1212,29 @@ public class MultiVector implements Serializable{
 
         int sp1 = mv1._shape.size() - 3;
         int sp2 = mv2._shape.size() - 3;
-        boolean needBoradcast = false;
+        boolean needBroadcast = false;
         while(sp1 >= 0 && sp2 >= 0)
         {
             if(!mv1._shape.get(sp1).equals(mv2._shape.get(sp2)))
             {
-                needBoradcast = true;
+                needBroadcast = true;
                 if(mv1._shape.get(sp1) != 1 && mv2._shape.get(sp2) != 1)
                 {
-                    String dims_str1 = "(";
-                    String dims_str2 = "(";
+                    StringBuilder dims_str1 = new StringBuilder("(");
+                    StringBuilder dims_str2 = new StringBuilder("(");
                     for(int i = 0; i < mv1._dims; i++)
                     {
-                        if(i < mv1._dims - 2) dims_str1 += String.valueOf(mv1._shape.get(i));
-                        else dims_str1 += "*";
-                        if(i < mv1._dims - 1) dims_str1 += ", ";
-                        else dims_str1 += ")";
+                        if(i < mv1._dims - 2) dims_str1.append(String.valueOf(mv1._shape.get(i)));
+                        else dims_str1.append("*");
+                        if(i < mv1._dims - 1) dims_str1.append(", ");
+                        else dims_str1.append(")");
                     }
                     for(int i = 0; i < mv2._dims; i++)
                     {
-                        if(i < mv2._dims - 2) dims_str2 += String.valueOf(mv2._shape.get(i));
-                        else dims_str2 += "*";
-                        if(i < mv2._dims - 1) dims_str2 += ", ";
-                        else dims_str2 += ")";
+                        if(i < mv2._dims - 2) dims_str2.append(String.valueOf(mv2._shape.get(i)));
+                        else dims_str2.append("*");
+                        if(i < mv2._dims - 1) dims_str2.append(", ");
+                        else dims_str2.append(")");
                     }
                     String format_str = "Dimension NOT match and can NOT broadcast between" + dims_str1  + " and " + dims_str2  + ", at dimension %s and dimension %s, got dimension size %s -- %s!";
                     throw new Exception(String.format(format_str, sp1, sp2, mv1._shape.get(sp1), mv2._shape.get(sp2)));
@@ -1176,7 +1248,7 @@ public class MultiVector implements Serializable{
         }
         if(sp1 >= 0)
         {
-            needBoradcast = true;
+            needBroadcast = true;
             while(sp1 >= 0)
             {
                 res_shape.add(mv1._shape.get(sp1));
@@ -1187,7 +1259,7 @@ public class MultiVector implements Serializable{
         }
         else if(sp2 >= 0)
         {
-            needBoradcast = true;
+            needBroadcast = true;
             while(sp2 >= 0)
             {
                 res_shape.add(mv2._shape.get(sp2));
@@ -1203,10 +1275,6 @@ public class MultiVector implements Serializable{
         Collections.reverse(mv2.temp_shape);
         Collections.reverse(res_shape);
 
-        int[] dims_size = new int[res_shape.size()];
-        for(int i = 0; i < res_shape.size(); i++) dims_size[i] = res_shape.get(i);
-        MultiVector res = new MultiVector(dims_size, 0);
-        res.needBroadcast = needBoradcast;
         //_component_eNum needs to change
         int tot1 = mv1.total_eNum;
         int tot2 = mv2.total_eNum;
@@ -1217,6 +1285,16 @@ public class MultiVector implements Serializable{
             mv2.temp_component_eNum.add(tot2 / mv2.temp_shape.get(i));
             tot2 /= mv2.temp_shape.get(i);
         }
+
+        int[] dims_size = new int[res_shape.size()];
+        for(int i = 0; i < res_shape.size(); i++) dims_size[i] = res_shape.get(i);
+
+        if(!actualCal){
+            return new MultiVector(dims_size, Calculation.SET_EMPTY_DATA);
+        }
+        MultiVector res = new MultiVector(dims_size, 0);
+        res.needBroadcast = needBroadcast;
+
         _matmul_recur(mv1, mv2, res, 0, 0, 0, 0);
         return res;
     }
@@ -1401,11 +1479,39 @@ public class MultiVector implements Serializable{
 
 
 
+    public static ArrayList<Integer> _getSumResultShape(MultiVector mv1, boolean retain_shape, int...axes) throws Exception{
+        int axis_upBound = mv1._shape.size();
+        int[] res_shapeArray = new int[axis_upBound];
+        if(axes.length == 0)
+        {
+            for(int i = 0; i < mv1._shape.size(); i++) res_shapeArray[i] = 1;
+        }
+        else
+        {
+            for(int i = 0; i < mv1._shape.size(); i++) res_shapeArray[i] = mv1._shape.get(i);
+            for(int axis : axes)
+            {
+                if(axis > axis_upBound)
+                {
+                    throw new Exception(String.format("Axis %d is Non-existent, where top axis is %d", axis, axis_upBound - 1));
+                }
+                res_shapeArray[axis] = 1;
+            }
+        }
 
+        ArrayList<Integer> res_shape = new ArrayList<>();
+        for(int x : res_shapeArray){
+            if(x == 1 && !retain_shape){
+                continue;
+            }
+            res_shape.add(x);
+        }
+        return res_shape;
+    }
     public static MultiVector sum(MultiVector mv1, boolean retain_shape, int...axes)
     {
         try{
-            return _sum_with_check(mv1, retain_shape, axes);
+            return _sum_with_check(mv1, retain_shape, true, axes);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1421,7 +1527,7 @@ public class MultiVector implements Serializable{
         else _sum_recur(res, mv1, 0, 0, 0, 0, 0);
         if(!retain_shape) res.squeeze();
     }
-    public static MultiVector _sum_with_check(MultiVector mv1, boolean retain_shape, int...axes) throws Exception
+    public static MultiVector _sum_with_check(MultiVector mv1, boolean retain_shape, boolean actualCal, int...axes) throws Exception
     {
         int axis_upBound = mv1._shape.size();
         int[] res_shape = new int[axis_upBound];
@@ -1430,6 +1536,11 @@ public class MultiVector implements Serializable{
         {
             //sum all of them
             for(int i = 0; i < mv1._shape.size(); i++) res_shape[i] = 1;
+            if(!actualCal){
+                res = new MultiVector(res_shape, Calculation.SET_EMPTY_DATA);
+                if(!retain_shape) res.squeeze();
+                return res;
+            }
             res = new MultiVector(res_shape, 0);
             _sum_nonRecur(res, mv1);
         }
@@ -1444,6 +1555,11 @@ public class MultiVector implements Serializable{
                     throw new Exception(String.format("Axis %d is Non-existent, where top axis is %d", axis, axis_upBound - 1));
                 }
                 res_shape[axis] = 1;
+            }
+            if(!actualCal){
+                res = new MultiVector(res_shape, Calculation.SET_EMPTY_DATA);
+                if(!retain_shape) res.squeeze();
+                return res;
             }
             res = new MultiVector(res_shape, 0);
             _sum_recur(res, mv1, 0, 0, 0, 0, 0);
@@ -1491,7 +1607,7 @@ public class MultiVector implements Serializable{
 
     public static MultiVector max(MultiVector mv1, HashMap<Integer, Integer> markers, boolean retain_shape, int...axes){
         try{
-            return _max_with_check(mv1, markers, retain_shape, axes);
+            return _max_with_check(mv1, markers, retain_shape, true, axes);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1508,7 +1624,7 @@ public class MultiVector implements Serializable{
     }
 
 
-    private static MultiVector _max_with_check(MultiVector mv1, HashMap<Integer, Integer> markers, boolean retain_shape, int[] axes) throws Exception{
+    private static MultiVector _max_with_check(MultiVector mv1, HashMap<Integer, Integer> markers, boolean retain_shape, boolean actualCal, int[] axes) throws Exception{
         int axis_upBound = mv1._shape.size();
         int[] res_shape = new int[axis_upBound];
         MultiVector res;
@@ -1516,6 +1632,11 @@ public class MultiVector implements Serializable{
         {
             //return the max value of all elements!
             for(int i = 0; i < mv1._shape.size(); i++) res_shape[i] = 1;
+            if(!actualCal){
+                res = new MultiVector(res_shape, Calculation.SET_EMPTY_DATA);
+                if(!retain_shape) res.squeeze();
+                return res;
+            }
             res = new MultiVector(res_shape, 0);
             if(markers == null){
                 markers = new HashMap<>();
@@ -1532,6 +1653,11 @@ public class MultiVector implements Serializable{
                     throw new Exception(String.format("Axis %d is Non-existent, where top axis is %d", axis, axis_upBound - 1));
                 }
                 res_shape[axis] = 1;
+            }
+            if(!actualCal){
+                res = new MultiVector(res_shape, Calculation.SET_EMPTY_DATA);
+                if(!retain_shape) res.squeeze();
+                return res;
             }
             res = new MultiVector(res_shape, Calculation.SET_DOUBLE_MIN);
             _max_recur(res, mv1, markers, 0,0,0,0,0);
@@ -1585,19 +1711,29 @@ public class MultiVector implements Serializable{
 
     public static MultiVector T(MultiVector mv1)
     {
+        return _T(mv1, true);
+    }
+
+    public static MultiVector _T(MultiVector mv1, boolean actualCal){
         int[] axes = new int[mv1._shape.size()];
         int axesupBound = mv1._dims;
         for(int i = 0; i < axesupBound; i++)
         {
             axes[i] = axesupBound - i - 1;
         }
-        return transpose(mv1, axes);
+        try{
+            return _transpose(mv1, actualCal, axes);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static MultiVector transpose(MultiVector mv1, int...axes)
     {
         try{
-            return _transpose(mv1, axes);
+            return _transpose(mv1, true, axes);
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1610,7 +1746,7 @@ public class MultiVector implements Serializable{
         int[] mv1_axes_idx = new int[mv1._dims];
         _transpose_recur(res, mv1, axes,0, 0, mv1_axes_idx);
     }
-    public static MultiVector _transpose(MultiVector mv1, int...axes) throws Exception
+    public static MultiVector _transpose(MultiVector mv1, boolean actualCal, int...axes) throws Exception
     {
         TreeSet<Integer> ts_axes = new TreeSet<>();
         for(int ax : axes) ts_axes.add(ax);
@@ -1626,6 +1762,9 @@ public class MultiVector implements Serializable{
         for(int i = 0; i < axesupBound; i++)
         {
             dims_size[i] = mv1._shape.get(axes[i]);
+        }
+        if(!actualCal){
+            return new MultiVector(dims_size, Calculation.SET_EMPTY_DATA);
         }
         MultiVector res = new MultiVector(dims_size, 0);
         if(res._dims == 1)
@@ -1679,7 +1818,7 @@ public class MultiVector implements Serializable{
     {
         MultiVector res = null;
         try{
-            res = MultiVector._squeeze(mv1, axes);
+            res = MultiVector._squeeze(mv1, true, axes);
             return res;
         }catch(Exception e)
         {
@@ -1687,7 +1826,7 @@ public class MultiVector implements Serializable{
         }
         return res;
     }
-    private static MultiVector _squeeze(MultiVector mv1, int...axes) throws Exception
+    private static MultiVector _squeeze(MultiVector mv1, boolean actualCal, int...axes) throws Exception
     {
         ArrayList<Integer> new_shape = new ArrayList<>();
         HashSet<Integer> hashst = new HashSet<>();
@@ -1708,6 +1847,9 @@ public class MultiVector implements Serializable{
             }
         }
         if(new_shape.isEmpty()) new_shape.add(1);
+        if(!actualCal){
+            return new MultiVector(new_shape, Calculation.SET_EMPTY_DATA);
+        }
         MultiVector res = MultiVector.MultiVector_like(new_shape, 0);
         //assign data value
         res._data = Arrays.copyOf(mv1._data, mv1.total_eNum);
@@ -1718,21 +1860,21 @@ public class MultiVector implements Serializable{
     {
         MultiVector res = null;
         try{
-            res = MultiVector._unsqueeze(mv1, axis);
+            res = MultiVector._unsqueeze(mv1, true, axis);
         }catch(Exception e)
         {
             e.printStackTrace();
         }
         return res;
     }
-    public static MultiVector _unsqueeze(MultiVector mv1, int axis) throws Exception
+    public static MultiVector _unsqueeze(MultiVector mv1, boolean actualCal, int axis) throws Exception
     {
         // if(axes.length == 0) throw new Exception("Must designate an axis position when using unsqueeze on a MultiVector!");
         if(axis < 0 || axis > mv1._dims)
         {
             throw new Exception(String.format("Axis index %d is out of range, should be in [0, %d]", axis, mv1._dims));
         }
-        MultiVector res = MultiVector_like(mv1, 0);
+        MultiVector res = MultiVector_like(mv1, Calculation.SET_EMPTY_DATA);
         if(axis < mv1._dims)
         {
             res._shape.add(axis, 1);
@@ -1744,6 +1886,10 @@ public class MultiVector implements Serializable{
             res._component_eNum.add(1);
         }
         res._dims += 1;
+        if(!actualCal){
+            return res;
+        }
+        res.initializeData(Calculation.SET_ALL_ZEROS);
         if (mv1.total_eNum >= 0) System.arraycopy(mv1._data, 0, res._data, 0, mv1.total_eNum);
         return res;
     }
@@ -1762,14 +1908,14 @@ public class MultiVector implements Serializable{
     {
         MultiVector res = null;
         try{
-            res = _slice(mv1, retain_shape, idxes_range);
+            res = _slice(mv1, retain_shape, true, idxes_range);
         }catch(Exception e)
         {
             e.printStackTrace();
         }
         return res;
     }
-    private static MultiVector _slice(MultiVector mv1, boolean retain_shape, Pair<Integer, Integer>..._idxes_range) throws Exception
+    private static MultiVector _slice(MultiVector mv1, boolean retain_shape, boolean actualCal, Pair<Integer, Integer>..._idxes_range) throws Exception
     {
         Pair<Integer, Integer>[] idxes_range = new Pair[mv1._dims];
         int[] idxes_start = new int[mv1._dims];
@@ -1801,10 +1947,15 @@ public class MultiVector implements Serializable{
         {
             dims_size[i] = idxes_range[i].second - idxes_range[i].first;
         }
+        if(!actualCal){
+            MultiVector res = new MultiVector(dims_size, Calculation.SET_EMPTY_DATA);
+            if(!retain_shape) res.squeeze();
+            return res;
+        }
         MultiVector res = new MultiVector(dims_size, 0);
         _slice_recur(res, mv1, 0, 0, 0, idxes_start);
 
-        if(!retain_shape) MultiVector.squeeze(res);
+        if(!retain_shape) res.squeeze();
         return res;
     }
     private static void _slice_recur(MultiVector res, MultiVector mv1, int cur_dim, int _res_offset, int _offset1, int[] idxes_start)

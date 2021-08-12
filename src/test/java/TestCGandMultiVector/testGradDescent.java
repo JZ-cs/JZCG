@@ -4,6 +4,8 @@ import CG.ComputationalGraph;
 import operation.MultiVector;
 import operation.Pair;
 import dataDistribute.utils.GenCG;
+import operation.optimizer.Adam;
+import operation.optimizer.Optimizer;
 import utils.DataGenerator;
 
 public class testGradDescent {
@@ -12,11 +14,13 @@ public class testGradDescent {
         int batchSize = 36;
         int[] xShape = {16};
         ComputationalGraph cg = GenCG.genSmallCG(batchSize);
+//        ComputationalGraph cg = GenCG.genComplexSmallCG(batchSize);
         DataGenerator dataGenerator = new DataGenerator(batches, batchSize, xShape);
         Pair<MultiVector[], MultiVector[]> data = dataGenerator.genData(true);
         MultiVector[] X = data.first;
         MultiVector[] Y = data.second;
-        for(int ep = 0; ep < 1; ep++){
+//        Optimizer adam = new Adam(0.1);
+        for(int ep = 0; ep < 5; ep++){
             for(int b = 0; b < X.length; b++){
                 cg.setData(X[b], Y[b]);
                 cg.DAG.transForward();
@@ -31,3 +35,4 @@ public class testGradDescent {
         }
     }
 }
+

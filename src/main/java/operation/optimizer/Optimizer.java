@@ -1,5 +1,9 @@
 package operation.optimizer;
 
-public interface Optimizer {
-    void updateGrads();
+
+import operation.Node;
+import java.io.Serializable;
+
+public interface Optimizer extends Serializable {
+    void updateWithGrads(Node nd);
 }

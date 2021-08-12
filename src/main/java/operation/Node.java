@@ -1,5 +1,7 @@
 package operation;
 
+import operation.optimizer.Optimizer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,7 +120,7 @@ public class Node implements Serializable {
     /*A Node can have multiple successors, but the number of predcessors is in {0,1,2},
         which currently use pred[] to store, so the "outd" field change(-1) happens in
         the specific child Node. This may change in the future, when multiple predcessors
-        is supported.*/
+        implementation is supported.*/
     public void transBack()
     {
         this.outd = this.outDegree;
@@ -140,6 +142,14 @@ public class Node implements Serializable {
             }
         }
         if(this.updateAND_clearGrad) this._grad.set_zeros();
+    }
+
+    public void _updateWith_Grad(Optimizer optimizer){
+        if(this.Trainable)
+        {
+            optimizer.updateWithGrads(this);
+        }
+        this._grad.set_zeros();
     }
 
     public String getName()

@@ -9,14 +9,14 @@ public class ExpNode extends Node {
         super(ch1);
         this.Name = "ExpNode-" + this.id;
 
-//        this._tensor = MultiVector.exp(ch1._tensor);
-//        this._grad = MultiVector.MultiVector_like(this._tensor);
+        this._tensor = MultiVector.MultiVector_like(ch1._tensor, Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor);
     }
 
     @Override
     public void transForward() {
         super.transForward();
-        if(this._tensor == null){
+        if(this._tensor._data == null){
             this._tensor = MultiVector.exp(this.pred[0]._tensor);
             this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
         }

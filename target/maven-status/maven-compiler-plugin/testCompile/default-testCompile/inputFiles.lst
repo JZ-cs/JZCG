@@ -5,7 +5,6 @@ D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testGenServerInfos.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSigmoidBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestOpBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testRingAllReduce.java
-D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestCG.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testCountDown.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testDDJob.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testIP.java
@@ -18,6 +17,7 @@ D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestMaxBackward.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testGradDescent.java
 D:\IDEA_Projects\JZCG\src\test\java\TestNIO\TestNetty.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSlice.java
+D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\testSynchronized.java
 D:\IDEA_Projects\JZCG\src\test\java\TestDataDistribute\testPartition.java
 D:\IDEA_Projects\JZCG\src\test\java\TestNIO\testScheduledExecutorService.java
 D:\IDEA_Projects\JZCG\src\test\java\TestCGandMultiVector\TestInitialization.java

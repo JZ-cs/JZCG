@@ -8,10 +8,8 @@ public class OpNode extends Node{
         super(ch1, ch2);
         this.opSign = opSign;
         this.Name = getName();
-        //initialize the _tensor here is OK, however not here is to avoid the switch thing,
-        //may alter to it later.
-//        this._tensor = MultiVector.MultiVector_like(getOpResultShape(ch1._tensor, ch2._tensor), Calculation.SET_EMPTY_DATA);
-//        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
+        this._tensor = MultiVector.MultiVector_like(getOpResultShape(ch1._tensor, ch2._tensor), Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
     }
     public String getName(){
         String prefix = null;
@@ -49,7 +47,7 @@ public class OpNode extends Node{
         super.transForward();
         switch (this.opSign){
             case Calculation.ADD:{
-                if(this._tensor == null){
+                if(this._tensor._data == null){
                     this._tensor = MultiVector.add(pred[0]._tensor, pred[1]._tensor);
                     assert this._tensor != null;
                     this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
@@ -58,7 +56,7 @@ public class OpNode extends Node{
                 break;
             }
             case Calculation.SUB:{
-                if(this._tensor == null){
+                if(this._tensor._data == null){
                     this._tensor = MultiVector.sub(pred[0]._tensor, pred[1]._tensor);
                     assert this._tensor != null;
                     this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
@@ -67,7 +65,7 @@ public class OpNode extends Node{
                 break;
             }
             case Calculation.MUL:{
-                if(this._tensor == null){
+                if(this._tensor._data == null){
                     this._tensor = MultiVector.mul(pred[0]._tensor, pred[1]._tensor);
                     assert this._tensor != null;
                     this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
@@ -76,7 +74,7 @@ public class OpNode extends Node{
                 break;
             }
             case Calculation.DIV:{
-                if(this._tensor == null){
+                if(this._tensor._data == null){
                     this._tensor = MultiVector.div(pred[0]._tensor, pred[1]._tensor);
                     assert this._tensor != null;
                     this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);

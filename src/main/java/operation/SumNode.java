@@ -1,5 +1,7 @@
 package operation;
 
+import java.util.ArrayList;
+
 public class SumNode extends Node{
     public boolean retain_shape;
     public int[] axes;
@@ -9,8 +11,17 @@ public class SumNode extends Node{
         this.retain_shape = retain_shape;
         this.axes = new int[axes.length];
         System.arraycopy(axes, 0, this.axes, 0, axes.length);
-//        this._tensor = MultiVector.sum(ch1._tensor, retain_shape, axes);
-//        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
+        this._tensor = MultiVector.MultiVector_like(getSumResultShape(ch1._tensor, retain_shape, axes), Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
+    }
+
+    private ArrayList<Integer> getSumResultShape(MultiVector mv1, boolean retain_shape, int...axes) {
+        try {
+            return MultiVector._getSumResultShape(mv1, retain_shape, axes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public SumNode(Node ch1){
@@ -41,7 +52,7 @@ public class SumNode extends Node{
     @Override
     public void transForward() {
         super.transForward();
-        if(this._tensor == null){
+        if(this._tensor._data == null){
             this._tensor = MultiVector.sum(pred[0]._tensor, this.retain_shape, this.axes);
             this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
         }
@@ -56,4 +67,5 @@ public class SumNode extends Node{
         this.pred[0]._grad.add(tgrad0);
         this.pred[0].outd--;
     }
+
 }

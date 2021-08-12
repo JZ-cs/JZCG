@@ -3,6 +3,7 @@ package operation;
 import operation.functionNodes.ExpNode;
 import operation.functionNodes.SigmoidNode;
 import operation.lossFunctions.MSELoss;
+import operation.optimizer.Optimizer;
 
 import java.util.*;
 
@@ -400,7 +401,7 @@ public class Moudle extends Node{
         while(!q.isEmpty())
         {
             Node front = q.poll();
-            System.out.println(front.getName());
+//            System.out.println(front.getName());
             if(!this.Preds.contains(front))
             {
                 front.transBack();
@@ -453,6 +454,23 @@ public class Moudle extends Node{
             }
         }
         if(this.updateAND_clearGrad) this._grad.set_zeros();
+    }
+
+    @Override
+    public void _updateWith_Grad(Optimizer optimizer) {
+        optimizer.updateWithGrads(this);
+        for(Node nd : this.nList)
+        {
+            /*input node and output node can not be trained, even if an input
+             * node is a true leaf node.
+             * if this true leaf input node needs to be trained, it should be inside
+             * the boxNode, DON'T make it an input of this Moudle.*/
+            if(!this.Preds.contains(nd)){
+//                    System.out.println(nd.Name);
+                nd._updateWith_Grad(optimizer);
+            }
+        }
+        this._grad.set_zeros();
     }
 
     public static boolean exitBoundary(Moudle moudle){

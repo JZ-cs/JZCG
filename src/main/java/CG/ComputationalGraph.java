@@ -15,7 +15,6 @@ import java.util.function.BiFunction;
 
 public class ComputationalGraph implements Serializable {
     public Moudle DAG;
-    public Optimizer optimizer;
     public Node input;
     public Node label;
     public Loss loss;
@@ -240,9 +239,10 @@ public class ComputationalGraph implements Serializable {
     }
     public void updateParameters(double lr){
         int batchSize = this.input._tensor._shape.get(0);
-        if(this.optimizer == null) this.DAG._updateWith_Grad(lr);
-        else{
-            this.optimizer.updateGrads();
-        }
+        this.DAG._updateWith_Grad(lr);
+    }
+
+    public void updateParameters(Optimizer optimizer){
+        this.DAG._updateWith_Grad(optimizer);
     }
 }

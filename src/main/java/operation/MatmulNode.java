@@ -12,16 +12,15 @@ public class MatmulNode extends Node
     public MatmulNode(Node ch1, Node ch2) //mm tensor and tensor
     {
         super(ch1, ch2);
-//        this._tensor = MultiVector.matmul(ch1._tensor, ch2._tensor);
-//        this._grad = MultiVector.MultiVector_like(this._tensor, 0);
+        this._tensor = MultiVector.MultiVector_like(getMatmulResultShape(ch1._tensor, ch2._tensor), Calculation.SET_EMPTY_DATA);
+        this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_EMPTY_DATA);
     }
 
     @Override
     public void transForward() {
         super.transForward();
-        if(this._tensor == null){
+        if(this._tensor._data == null){
             this._tensor = MultiVector.matmul(this.pred[0]._tensor, this.pred[1]._tensor);
-            assert this._tensor != null;
             this._grad = MultiVector.MultiVector_like(this._tensor, Calculation.SET_ALL_ZEROS);
         }
         else MultiVector.matmul(this.pred[0]._tensor, this.pred[1]._tensor, this._tensor);
@@ -102,5 +101,15 @@ public class MatmulNode extends Node
         //sub outdegrees by 1
         this.pred[0].outd--;
         this.pred[1].outd--;
+    }
+
+    public ArrayList<Integer> getMatmulResultShape(MultiVector mv1, MultiVector mv2){
+        ArrayList<Integer> res_shape = null;
+        try {
+            res_shape = MultiVector._getMatmulResultShape(mv1, mv2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res_shape;
     }
 }
