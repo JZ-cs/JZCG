@@ -1,20 +1,19 @@
 package CG;
 
 import operation.*;
+import operation.Module;
 import operation.layers.Linear;
 import operation.lossFunctions.Loss;
 import operation.lossFunctions.MSELoss;
-import operation.optimizer.Adam;
 import operation.optimizer.Optimizer;
 import utils.GraphTravels;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.function.BiFunction;
 
 public class ComputationalGraph implements Serializable {
-    public Moudle DAG;
+    public Module DAG;
     public Node input;
     public Node label;
     public Loss loss;
@@ -23,7 +22,7 @@ public class ComputationalGraph implements Serializable {
     public HashMap<String, Node> leafNameMap;
     public HashMap<String, int[]> gradName2posInfo;
     public ComputationalGraph(){
-        this.DAG = new Moudle();
+        this.DAG = new Module();
     }
     public long totalGradNums = 0;
     public Node getInput() {

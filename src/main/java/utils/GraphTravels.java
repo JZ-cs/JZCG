@@ -1,6 +1,6 @@
 package utils;
 
-import operation.Moudle;
+import operation.Module;
 import operation.Node;
 
 import java.util.Collection;
@@ -16,8 +16,8 @@ public class GraphTravels {
         if(node.isLeaf){
             leaves.add(node);
         }
-        else if(node instanceof Moudle){
-            Moudle md = (Moudle) node;
+        else if(node instanceof Module){
+            Module md = (Module) node;
             for(Node subNode : md.nList){
                 subTravel(subNode, leaves);
             }

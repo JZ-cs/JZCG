@@ -2,11 +2,8 @@ package TestModelDistribute;
 
 import CG.ComputationalGraph;
 import dataDistribute.utils.GenCG;
-import modelDistribute.utils.ModelSplits;
-import operation.MultiVector;
+import utils.ModelSplits;
 import operation.Node;
-
-import java.util.LinkedList;
 
 public class testUnpackMoudle {
     public static void main(String[] args) {

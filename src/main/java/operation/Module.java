@@ -7,7 +7,7 @@ import operation.optimizer.Optimizer;
 
 import java.util.*;
 
-public class Moudle extends Node{
+public class Module extends Node{
     public int _nodesNum = 0;
     public int _edgesNum = 0;
     public int _totalParameters = 0;
@@ -25,7 +25,7 @@ public class Moudle extends Node{
     public HashMap<Node, Integer> nMap = new HashMap<Node, Integer>(); //mapping Node address to id in nList;
 
     //preds(AKA the inputs) should not be added into the DAG!!!
-    public Moudle(){
+    public Module(){
         this.Name = "Moudle-" + this.id;
         this.isMoudle = true;
         this.Preds = new HashSet<>();
@@ -34,7 +34,7 @@ public class Moudle extends Node{
         this._tensor = null;
         this._grad = null;
     }
-    public Moudle(Node... _inputs)
+    public Module(Node... _inputs)
     {
         this();
         for(Node _inp : _inputs)
@@ -473,26 +473,26 @@ public class Moudle extends Node{
         this._grad.set_zeros();
     }
 
-    public static boolean exitBoundary(Moudle moudle){
-        for(Node node : moudle.nList){
+    public static boolean exitBoundary(Module module){
+        for(Node node : module.nList){
             if(node.isMoudle){
-                if(exitBoundary((Moudle) node)) return true;
+                if(exitBoundary((Module) node)) return true;
                 for(Node pred : node.Preds){
-                    if(!moudle.nMap.containsKey(pred) && !moudle.Preds.contains(pred)){
+                    if(!module.nMap.containsKey(pred) && !module.Preds.contains(pred)){
                         return true;
                     }
                 }
             }
             else{
                 if(node.pred[0] != null){
-                    if(!moudle.nMap.containsKey(node.pred[0]) && !moudle.Preds.contains(node.pred[0])) return true;
+                    if(!module.nMap.containsKey(node.pred[0]) && !module.Preds.contains(node.pred[0])) return true;
                 }
                 if(node.pred[1] != null){
-                    if(!moudle.nMap.containsKey(node.pred[1]) && !moudle.Preds.contains(node.pred[1])) return true;
+                    if(!module.nMap.containsKey(node.pred[1]) && !module.Preds.contains(node.pred[1])) return true;
                 }
             }
             for(Node succ : node.succList){
-                if(!moudle.nMap.containsKey(succ)) return true;
+                if(!module.nMap.containsKey(succ)) return true;
             }
         }
         return false;

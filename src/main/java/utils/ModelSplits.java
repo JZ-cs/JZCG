@@ -1,18 +1,16 @@
-package modelDistribute.utils;
+package utils;
 
-import operation.Moudle;
+import operation.Module;
 import operation.Node;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 public class ModelSplits {
-    public static void unpackSubMoudles(Moudle DAG){
+    public static void unpackSubMoudles(Module DAG){
         HashSet<Node> newMembers = new HashSet<>();
         for(Node node : DAG.nList){
             if(node.isMoudle){
-                unpackMoudle((Moudle) node, newMembers);
+                unpackMoudle((Module) node, newMembers);
             }
             else{
                 int outdDec = 0;
@@ -34,20 +32,20 @@ public class ModelSplits {
             if(node.isLeaf) DAG.Leaves.add(node);
         }
     }
-    public static void unpackMoudle(Moudle moudle, HashSet<Node> newMembers){
-        Node output = moudle._output;
-        for(Node succ : moudle.succList){
+    public static void unpackMoudle(Module module, HashSet<Node> newMembers){
+        Node output = module._output;
+        for(Node succ : module.succList){
             if(!succ.isMoudle){
                 output.succList.add(succ);
                 output.outDegree += 1;
-                if(succ.pred[0] == moudle) succ.pred[0] = output;
-                if(succ.pred[1] == moudle) succ.pred[1] = output;
+                if(succ.pred[0] == module) succ.pred[0] = output;
+                if(succ.pred[1] == module) succ.pred[1] = output;
             }
         }
         newMembers.add(output);
-        for(Node node : moudle.nList){
+        for(Node node : module.nList){
             if(node.isMoudle){
-                unpackMoudle((Moudle)node, newMembers);
+                unpackMoudle((Module)node, newMembers);
             }
             else{
                 int outdDec = 0;

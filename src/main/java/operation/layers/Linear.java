@@ -1,11 +1,11 @@
 package operation.layers;
 
 import operation.Calculation;
-import operation.Moudle;
+import operation.Module;
 import operation.MultiVector;
 import operation.Node;
 
-public class Linear extends Moudle {
+public class Linear extends Module {
     public Linear(Node x, int hidden_size, boolean bias, int ac_fn){
         this.Name = "Linear-" + this.id;
         System.out.println(x._tensor._shape.toString());
