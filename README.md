@@ -22,7 +22,7 @@
 
 ### 大佬轻喷，欢迎提出意见，不论是关于Java的，还是实现上的，直接拉分支当然更好。
 
-![示例](https://github.com/JZ-cs/JZCG/images/CG example.pdf)
+![示例](https://github.com/JZ-cs/JZCG/images/CG_example.pdf)
 
 
 
