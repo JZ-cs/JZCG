@@ -6,8 +6,8 @@ import java.util.*;
 public class MultiVector implements Serializable{
     public ArrayList<Integer> _shape = new ArrayList<>();
     public ArrayList<Integer> _component_eNum = new ArrayList<>();
-    ArrayList<Integer> temp_shape = new ArrayList<>(); //used in calculation when boradcast is needed!
-    ArrayList<Integer> temp_component_eNum = new ArrayList<>(); //used in calculation when boradcast is needed!
+    ArrayList<Integer> temp_shape = new ArrayList<>(); //used in calculation when broadcast is needed!
+    ArrayList<Integer> temp_component_eNum = new ArrayList<>(); //used in calculation when broadcast is needed!
     public double[] _data;
     public int total_eNum = 0;
     public int _dims; //total dim length
