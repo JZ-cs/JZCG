@@ -20,7 +20,7 @@
 1.  所有代码均位于/src/main/java/下。
 2.  operation包：定义了作为所有操作结点父类的Node, 以及相应的具体子操作结点。
 3.  operation下的MultiVector.java，实现多维张量的主要代码，包括多维张量的定义，具体的计算操作等均在里面实现，操作Node(如MatmulNode)里面的计算也是调用MultiVector.java里的实现。
-4.  network包和dataDistribute包，实现了简易的数据分布式训练功能。
+4.  network包和dataDistribute包，实现了简易的数据分布式训练功能（只在曾经拥有的3台阿里云ECS上试过没啥问题，当然有问题也不奇怪）。
 
 
 ### 大佬轻喷，欢迎提出意见，不论是关于Java的，还是实现上的。
