@@ -10,7 +10,7 @@
 ### 更加优雅的类PyTorch玩具框架请看CMU的DLSys课程的Lab
 [CMU DLSys](https://dlsyscourse.org/assignments/)
 
-[Lab实现与拓展](https://github.com/JZ-cs/DLSys/tree/main)
+[个人的Lab实现与拓展](https://github.com/JZ-cs/DLSys/tree/main)
 
 ### 已实现的功能：
 1. 基本操作：加减乘除和矩阵乘法;
